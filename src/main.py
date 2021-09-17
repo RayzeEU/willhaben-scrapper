@@ -79,8 +79,6 @@ class PagePoller:
     ----------
     config : ConfigParser
         the config of the tool
-    url : str
-        the website which should be scrapped
     products : list of Product
         a list of products listed on the website
     driver : Firefox
@@ -118,6 +116,8 @@ class PagePoller:
         self.products = []
 
     def check_website(self):
+        print("finding cards ...")
+
         # gERttF = css for the title
         # fwafsN = css for the price
         elements = self.driver.find_elements_by_css_selector('.gERttF')
@@ -127,12 +127,21 @@ class PagePoller:
         for element, price_element in zip(elements, price_elements):
             products.append(Product(element.text, price_element.text.replace('€', '').replace(' ', '').replace(',', '.')))
 
+        count_matching = len(products)
+
+        print("found %s cards ..." % count_matching)
+        print("calculating card performances ...")
         for price_element in products:
             product_name_uppercase = price_element.name.replace(' ', '').upper()
 
-            if "1060" in product_name_uppercase:
+            if "1050TI" in product_name_uppercase:
+                price_element.set_product_properties("1050 Ti", 12.3)
+
+            elif "1060" in product_name_uppercase:
                 price_element.set_product_properties("1060", 35.7)
 
+            elif "1070TI" in product_name_uppercase:
+                price_element.set_product_properties("1070 Ti", 47.1)
             elif "1070" in product_name_uppercase:
                 price_element.set_product_properties("1070", 44.4)
 
@@ -140,6 +149,11 @@ class PagePoller:
                 price_element.set_product_properties("1080 Ti", 68.1)
             elif "1080" in product_name_uppercase:
                 price_element.set_product_properties("1080", 55.5)
+
+            elif "1650SUPER" in product_name_uppercase:
+                price_element.set_product_properties("1650 Super", 23.7)
+            elif "1650" in product_name_uppercase:
+                price_element.set_product_properties("1650", 25.5)
 
             elif "1660SUPER" in product_name_uppercase:
                 price_element.set_product_properties("1660 Super", 50.4)
@@ -163,15 +177,45 @@ class PagePoller:
             elif "2080" in product_name_uppercase:
                 price_element.set_product_properties("2080", 72.9)
 
+            elif "P2200" in product_name_uppercase:
+                price_element.set_product_properties("P2200", 30.3)
+
+            elif "390" in product_name_uppercase:
+                price_element.set_product_properties("390", 28.5)
+
+            elif "4000" in product_name_uppercase:
+                price_element.set_product_properties("4000", 59.1)
+
+            elif "480" in product_name_uppercase:
+                price_element.set_product_properties("480", 43.8)
+
+            elif "5700XT" in product_name_uppercase:
+                price_element.set_product_properties("5700 XT", 86.1)
+
+            elif "590" in product_name_uppercase:
+                price_element.set_product_properties("590", 44.4)
+
+            elif "6600" in product_name_uppercase:
+                price_element.set_product_properties("6600", 51.9)
+
+            elif "6700" in product_name_uppercase:
+                price_element.set_product_properties("6700", 70.8)
+
+            elif "VEGA56" in product_name_uppercase:
+                price_element.set_product_properties("VEGA 56", 51.6)
+            elif "VEGA64" in product_name_uppercase:
+                price_element.set_product_properties("VEGA 64", 66)
+
             else:
                 price_element.set_product_properties("Not mapped", 1)
+                count_matching = count_matching - 1
 
         products.sort(key=lambda p: p.roi, reverse=True)
 
         for price_element in products:
             print(price_element.display_string)
 
-        print(BackgroundColors.OKCYAN + "Total Products found: %s" % len(products) + BackgroundColors.ENDC)
+        print(BackgroundColors.OKCYAN + "Total Products matched/found: %s/%s" % (count_matching, len(products)) + BackgroundColors.ENDC)
         if len(elements) != len(price_elements):
             print(BackgroundColors.WARNING + "Warning: There is a mismatch between element count and prices count." + BackgroundColors.ENDC)
         else:
