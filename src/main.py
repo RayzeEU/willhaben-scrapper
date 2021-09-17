@@ -1,4 +1,5 @@
 import time
+from asyncio import wait_for
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.firefox.options import Options
@@ -116,20 +117,34 @@ class PagePoller:
         self.products = []
 
     def check_website(self):
-        print("finding cards ...")
-
-        # gERttF = css for the title
-        # fwafsN = css for the price
-        elements = self.driver.find_elements_by_css_selector('.gERttF')
-        price_elements = self.driver.find_elements_by_css_selector('.fwafsN')
-
+        index = 0
         products = self.products
-        for element, price_element in zip(elements, price_elements):
-            products.append(Product(element.text, price_element.text.replace('€', '').replace(' ', '').replace(',', '.')))
 
+        while index < 3:
+            self.scroll_to_bottom()
+
+            print("finding cards (%s) ..." % index)
+
+            # gERttF = css for the title
+            # fwafsN = css for the price
+            elements = self.driver.find_elements_by_css_selector('.gERttF')
+            price_elements = self.driver.find_elements_by_css_selector('.fwafsN')
+
+            for element, price_element in zip(elements, price_elements):
+                products.append(
+                    Product(element.text, price_element.text.replace('€', '').replace(' ', '').replace(',', '.')))
+
+            with wait_for_page_load(self.driver):
+                self.driver.find_element_by_css_selector("a[data-testid=\"pagination-bottom-next-button\"]").click()
+
+            print("finished finding cards (%s) ..." % index)
+
+            index = index + 1
+
+        count_products = len(products)
         count_matching = len(products)
 
-        print("found %s cards ..." % count_matching)
+        print("found %s cards ..." % count_products)
         print("calculating card performances ...")
         for price_element in products:
             product_name_uppercase = price_element.name.replace(' ', '').upper()
@@ -215,11 +230,11 @@ class PagePoller:
         for price_element in products:
             print(price_element.display_string)
 
-        print(BackgroundColors.OKCYAN + "Total Products matched/found: %s/%s" % (count_matching, len(products)) + BackgroundColors.ENDC)
-        if len(elements) != len(price_elements):
-            print(BackgroundColors.WARNING + "Warning: There is a mismatch between element count and prices count." + BackgroundColors.ENDC)
-        else:
-            print(BackgroundColors.OKCYAN + "No mismatches between element and price count found." + BackgroundColors.ENDC)
+        print(BackgroundColors.OKCYAN + "Total Products matched/found: %s/%s" % (count_matching, count_products) + BackgroundColors.ENDC)
+        # if len(elements) != len(price_elements):
+        #     print(BackgroundColors.WARNING + "Warning: There is a mismatch between element count and prices count." + BackgroundColors.ENDC)
+        # else:
+        #     print(BackgroundColors.OKCYAN + "No mismatches between element and price count found." + BackgroundColors.ENDC)
 
         self.driver.close()
         self.driver.quit()
@@ -252,7 +267,21 @@ class PagePoller:
                 break
 
 
+class wait_for_page_load(object):
+    def __init__(self, browser):
+        self.browser = browser
+
+    def __enter__(self):
+        self.old_page = self.browser.find_element_by_tag_name('html')
+
+    def page_has_loaded(self):
+        new_page = self.browser.find_element_by_tag_name('html')
+        return new_page.id != self.old_page.id
+
+    def __exit__(self, *_):
+        wait_for(self.page_has_loaded, 60)
+
+
 pagepoller = PagePoller()
 
-pagepoller.scroll_to_bottom()
 pagepoller.check_website()
