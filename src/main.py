@@ -14,16 +14,6 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
-def setProductProperties(product, card_name, profit_per_month):
-
-    if (product.price.replace(',', '.') == ''):
-        return
-
-    return_of_investment = float(product.price.replace(',', '.')) / profit_per_month
-    product.roi = float(return_of_investment)
-
-    product.display_string =  "ROI {7}\'{6}\' - {1}€{8}: {4}{2}{5} (Full Name: {3})".format(product.name, product.price, '{0:.2f}'.format(return_of_investment), product.name, bcolors.OKGREEN, bcolors.ENDC, card_name, bcolors.OKBLUE, bcolors.ENDC)
-    
 class Product:
     """
     A class used to represent a product on Willhaben
@@ -41,6 +31,10 @@ class Product:
     display_string : str
         this property combines important properties into a readable string which can be printed
 
+    Methods
+    -------
+    setProductProperties(card_name, profit_per_month)
+        Sets return of investment and display string properties
     """
 
     def __init__(self, name, price):
@@ -48,6 +42,16 @@ class Product:
         self.price = price
         self.roi = 0.00
         self.display_string = ""
+
+    def setProductProperties(self, card_name, profit_per_month):
+
+        if (self.price == ''):
+            return
+
+        return_of_investment = float(self.price) / profit_per_month
+        self.roi = float(return_of_investment)
+
+        self.display_string =  "ROI {7}\'{6}\' - {1}€{8}: {4}{2}{5} (Full Name: {3})".format(self.name, self.price, '{0:.2f}'.format(return_of_investment), self.name, bcolors.OKGREEN, bcolors.ENDC, card_name, bcolors.OKBLUE, bcolors.ENDC)     
 
 class PagePoller:
     """
@@ -89,50 +93,52 @@ class PagePoller:
         self.products = []
     
     def checkWebsite(self):
+        #gERttF = css for the title
+        #fwafsN = css for the price
         elements = self.driver.find_elements_by_css_selector('.gERttF')
         price_elements = self.driver.find_elements_by_css_selector('.fwafsN')
 
         for e, p in zip(elements, price_elements):        
-            self.products.append(Product(e.text, p.text.replace('€', '').replace(' ', '')))
+            self.products.append(Product(e.text, p.text.replace('€', '').replace(' ', '').replace(',', '.')))
         
         for p in self.products:
             product_name_uppercase = p.name.replace(' ', '').upper()
 
             if "1060" in product_name_uppercase:
-                setProductProperties(p, "1060", 35.7)
+                p.setProductProperties("1060", 35.7)
 
             elif "1070" in product_name_uppercase:
-                setProductProperties(p, "1070", 44.4)
+                p.setProductProperties("1070", 44.4)
 
             elif "1080TI" in product_name_uppercase:
-                setProductProperties(p, "1080 Ti", 68.1)
+                p.setProductProperties("1080 Ti", 68.1)
             elif "1080" in product_name_uppercase:
-                setProductProperties(p, "1080", 55.5)
+                p.setProductProperties("1080", 55.5)
 
             elif "1660SUPER" in product_name_uppercase:
-                setProductProperties(p, "1660 Super", 50.4)
+                p.setProductProperties("1660 Super", 50.4)
             elif "1660TI" in product_name_uppercase:
-                setProductProperties(p, "1660 Ti", 49.2)
+                p.setProductProperties("1660 Ti", 49.2)
             elif "1660" in product_name_uppercase:
-                setProductProperties(p, "1660", 41.1)
+                p.setProductProperties("1660", 41.1)
 
             elif "2060SUPER" in product_name_uppercase:
-                setProductProperties(p, "2060 Super", 66.9)
+                p.setProductProperties("2060 Super", 66.9)
             elif "2060" in product_name_uppercase:
-                setProductProperties(p, "2060", 51.9)
+                p.setProductProperties("2060", 51.9)
                 
             elif "2070SUPER" in product_name_uppercase:
-                setProductProperties(p, "2070 Super", 71.4)
+                p.setProductProperties("2070 Super", 71.4)
             elif "2070" in product_name_uppercase:
-                setProductProperties(p, "2070", 67.8)
+                p.setProductProperties("2070", 67.8)
 
             elif "2080SUPER" in product_name_uppercase:
-                setProductProperties(p, "2080 Super", 72)
+                p.setProductProperties("2080 Super", 72)
             elif "2080" in product_name_uppercase:
-                setProductProperties(p, "2080", 72.9)
+                p.setProductProperties("2080", 72.9)
 
             else:
-                setProductProperties(p, "Not mapped", 1)
+                p.setProductProperties("Not mapped", 1)
         
         self.products.sort(key=lambda p: p.roi, reverse=True)
 
