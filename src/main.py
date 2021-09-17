@@ -1,9 +1,15 @@
 import time
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.firefox.options import Options
 import configparser
+import os
 
-class bcolors:
+GECKODRIVER_PATH = "..\\drivers\\geckodriver-v0.27.0-win64\\geckodriver.exe"
+PROPERTIES_FILE = "..\\config.properties"
+
+
+class BackgroundColors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
     OKCYAN = '\033[96m'
@@ -13,6 +19,7 @@ class bcolors:
     ENDC = '\033[0m'
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
+
 
 class Product:
     """
@@ -33,7 +40,7 @@ class Product:
 
     Methods
     -------
-    setProductProperties(card_name, profit_per_month)
+    set_product_properties(card_name, profit_per_month)
         Sets return of investment and display string properties
     """
 
@@ -43,15 +50,24 @@ class Product:
         self.roi = 0.00
         self.display_string = ""
 
-    def setProductProperties(self, card_name, profit_per_month):
-
-        if (self.price == ''):
+    def set_product_properties(self, card_name, profit_per_month):
+        if self.price == '':
             return
 
         return_of_investment = float(self.price) / profit_per_month
         self.roi = float(return_of_investment)
 
-        self.display_string =  "ROI {7}\'{6}\' - {1}€{8}: {4}{2}{5} (Full Name: {3})".format(self.name, self.price, '{0:.2f}'.format(return_of_investment), self.name, bcolors.OKGREEN, bcolors.ENDC, card_name, bcolors.OKBLUE, bcolors.ENDC)     
+        self.display_string = "ROI {7}\'{6}\' - {1}€{8}: {4}{2}{5} (Full Name: {3})"\
+            .format(self.name,
+                    self.price,
+                    '{0:.2f}'.format(return_of_investment),
+                    self.name,
+                    BackgroundColors.OKGREEN,
+                    BackgroundColors.ENDC,
+                    card_name,
+                    BackgroundColors.OKBLUE,
+                    BackgroundColors.ENDC)
+
 
 class PagePoller:
     """
@@ -72,124 +88,127 @@ class PagePoller:
 
     Methods
     -------
-    checkWebsite()
+    check_website()
         Loops through the webpage, adds products to the products list and close the browser
-    createBrowser()
+    accept_cookies()
         Creates the driver for the browser and clicks the cookies button
-    refreshPage()
+    refresh_page()
         Re-opens the browser
-    scrollToBottom()
+    scroll_to_bottom()
         Scrolls to the bottom of the page
     """
 
     def __init__(self):
-        #Read config file, should contain 'url'
+        print("reading config ...")
+        # Read config file, should contain 'url'
         config = configparser.ConfigParser()
-        config.read('config.properties')
+        config.read(os.path.join(os.path.dirname(__file__), PROPERTIES_FILE))
         self.config = config
 
-        self.url = config.get('General', 'url')
-        self.createBrowser()
+        print("setting up firefox ...")
+        firefox_options = Options()
+        # --headless is for hiding the Firefox window, comment out to show again
+        firefox_options.add_argument("--headless")
+        self.driver = webdriver.Firefox(executable_path=os.path.join(os.path.dirname(__file__), GECKODRIVER_PATH), options=firefox_options)
+
+        print("opening page ...")
+        self.driver.get(self.config.get('General', 'url'))
+        self.accept_cookies()
+
         self.products = []
-    
-    def checkWebsite(self):
-        #gERttF = css for the title
-        #fwafsN = css for the price
+
+    def check_website(self):
+        # gERttF = css for the title
+        # fwafsN = css for the price
         elements = self.driver.find_elements_by_css_selector('.gERttF')
         price_elements = self.driver.find_elements_by_css_selector('.fwafsN')
 
-        for e, p in zip(elements, price_elements):        
-            self.products.append(Product(e.text, p.text.replace('€', '').replace(' ', '').replace(',', '.')))
-        
-        for p in self.products:
-            product_name_uppercase = p.name.replace(' ', '').upper()
+        products = self.products
+        for element, price_element in zip(elements, price_elements):
+            products.append(Product(element.text, price_element.text.replace('€', '').replace(' ', '').replace(',', '.')))
+
+        for price_element in products:
+            product_name_uppercase = price_element.name.replace(' ', '').upper()
 
             if "1060" in product_name_uppercase:
-                p.setProductProperties("1060", 35.7)
+                price_element.set_product_properties("1060", 35.7)
 
             elif "1070" in product_name_uppercase:
-                p.setProductProperties("1070", 44.4)
+                price_element.set_product_properties("1070", 44.4)
 
             elif "1080TI" in product_name_uppercase:
-                p.setProductProperties("1080 Ti", 68.1)
+                price_element.set_product_properties("1080 Ti", 68.1)
             elif "1080" in product_name_uppercase:
-                p.setProductProperties("1080", 55.5)
+                price_element.set_product_properties("1080", 55.5)
 
             elif "1660SUPER" in product_name_uppercase:
-                p.setProductProperties("1660 Super", 50.4)
+                price_element.set_product_properties("1660 Super", 50.4)
             elif "1660TI" in product_name_uppercase:
-                p.setProductProperties("1660 Ti", 49.2)
+                price_element.set_product_properties("1660 Ti", 49.2)
             elif "1660" in product_name_uppercase:
-                p.setProductProperties("1660", 41.1)
+                price_element.set_product_properties("1660", 41.1)
 
             elif "2060SUPER" in product_name_uppercase:
-                p.setProductProperties("2060 Super", 66.9)
+                price_element.set_product_properties("2060 Super", 66.9)
             elif "2060" in product_name_uppercase:
-                p.setProductProperties("2060", 51.9)
-                
+                price_element.set_product_properties("2060", 51.9)
+
             elif "2070SUPER" in product_name_uppercase:
-                p.setProductProperties("2070 Super", 71.4)
+                price_element.set_product_properties("2070 Super", 71.4)
             elif "2070" in product_name_uppercase:
-                p.setProductProperties("2070", 67.8)
+                price_element.set_product_properties("2070", 67.8)
 
             elif "2080SUPER" in product_name_uppercase:
-                p.setProductProperties("2080 Super", 72)
+                price_element.set_product_properties("2080 Super", 72)
             elif "2080" in product_name_uppercase:
-                p.setProductProperties("2080", 72.9)
+                price_element.set_product_properties("2080", 72.9)
 
             else:
-                p.setProductProperties("Not mapped", 1)
-        
-        self.products.sort(key=lambda p: p.roi, reverse=True)
+                price_element.set_product_properties("Not mapped", 1)
 
-        for p in self.products:
-            print(p.display_string)
+        products.sort(key=lambda p: p.roi, reverse=True)
 
-        print(bcolors.OKCYAN + "Total Products found: %s" % len(self.products) + bcolors.ENDC)
-        if (len(elements) != len(price_elements)):
-            print(bcolors.WARNING + "Warning: There is a mismatch between element count and prices count." + bcolors.ENDC)
+        for price_element in products:
+            print(price_element.display_string)
+
+        print(BackgroundColors.OKCYAN + "Total Products found: %s" % len(products) + BackgroundColors.ENDC)
+        if len(elements) != len(price_elements):
+            print(BackgroundColors.WARNING + "Warning: There is a mismatch between element count and prices count." + BackgroundColors.ENDC)
         else:
-            print(bcolors.OKCYAN + "No mismatches between element and price count found." + bcolors.ENDC)
-        
+            print(BackgroundColors.OKCYAN + "No mismatches between element and price count found." + BackgroundColors.ENDC)
+
         self.driver.close()
         self.driver.quit()
 
-    def createBrowser(self):
-        self.driver = webdriver.Firefox(executable_path=self.config.get('General', 'driverPath'))
-        self.driver.get(self.url)
-
-        #Accept Cookies button
+    def accept_cookies(self):
+        # Accept Cookies button
         try:
             self.driver.find_element_by_id('didomi-notice-agree-button').click()
         except NoSuchElementException:
             pass
 
-    def refreshPage(self):
-        self.driver.close()
-        self.driver.quit()
-        self.createBrowser()
-
-    def scrollToBottom(self):
-        SCROLL_PAUSE_TIME = 0.1
-
+    def scroll_to_bottom(self):
+        scroll_pause_time = 0.1
         height_to_scroll = 1000
 
         while True:
-            
+            print("scrolling ...")
+
             height_to_scroll = height_to_scroll + 1000
 
             # Scroll down to bottom
-            pagepoller.driver.execute_script("window.scrollTo(0, %s);" % height_to_scroll)
+            self.driver.execute_script("window.scrollTo(0, %s);" % height_to_scroll)
 
             # Wait to load page
-            time.sleep(SCROLL_PAUSE_TIME)
+            time.sleep(scroll_pause_time)
 
             # Calculate new scroll height and compare with last scroll height
-            new_height = pagepoller.driver.execute_script("return document.body.scrollHeight")
+            new_height = self.driver.execute_script("return document.body.scrollHeight")
             if height_to_scroll > new_height:
                 break
 
+
 pagepoller = PagePoller()
 
-pagepoller.scrollToBottom()
-pagepoller.checkWebsite()
+pagepoller.scroll_to_bottom()
+pagepoller.check_website()
