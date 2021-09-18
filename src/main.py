@@ -8,6 +8,7 @@ import os
 
 GECKODRIVER_PATH = "..\\drivers\\geckodriver-v0.27.0-win64\\geckodriver.exe"
 PROPERTIES_FILE = "..\\config.properties"
+BLACKLIST_FILE = "..\\blacklist.txt"
 
 
 class BackgroundColors:
@@ -104,6 +105,13 @@ class PagePoller:
         config.read(os.path.join(os.path.dirname(__file__), PROPERTIES_FILE))
         self.config = config
 
+        print("reading blacklist")
+        # Read the blacklist file, exact product names in this file will be ignored
+        with open(os.path.join(os.path.dirname(__file__), BLACKLIST_FILE), "r", encoding="UTF8") as blacklist:
+            self.blacklist = blacklist.read().splitlines()
+
+        print("%s cards are blacklisted" % len(self.blacklist))
+
         print("setting up firefox ...")
         firefox_options = Options()
         # --headless is for hiding the Firefox window, comment out to show again
@@ -149,10 +157,14 @@ class PagePoller:
         for price_element in products:
             product_name_uppercase = price_element.name.replace(' ', '').upper()
 
+            if "DEFEKT" in product_name_uppercase or price_element.name in self.blacklist:
+                count_matching = count_matching - 1
+                continue
+
             if "1050TI" in product_name_uppercase:
                 price_element.set_product_properties("1050 Ti", 12.3)
 
-            elif "1060" in product_name_uppercase:
+            elif "1060" in product_name_uppercase and "3GB" not in product_name_uppercase:
                 price_element.set_product_properties("1060", 35.7)
 
             elif "1070TI" in product_name_uppercase:
@@ -221,6 +233,9 @@ class PagePoller:
             elif "VEGA64" in product_name_uppercase:
                 price_element.set_product_properties("VEGA 64", 66)
 
+            elif "3090" in product_name_uppercase:
+                price_element.set_product_properties("3090", 191.4)
+
             else:
                 price_element.set_product_properties("Not mapped", 1)
                 count_matching = count_matching - 1
@@ -228,6 +243,8 @@ class PagePoller:
         products.sort(key=lambda p: p.roi, reverse=True)
 
         for price_element in products:
+            if (price_element.display_string == ""):
+                continue
             print(price_element.display_string)
 
         print(BackgroundColors.OKCYAN + "Total Products matched/found: %s/%s" % (count_matching, count_products) + BackgroundColors.ENDC)
