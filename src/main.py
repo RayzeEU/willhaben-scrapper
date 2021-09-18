@@ -5,23 +5,12 @@ from selenium.webdriver.firefox.options import Options
 import configparser
 import os
 
+from src.background_colors import BackgroundColors
 from src.product import Product
 
 GECKODRIVER_PATH = "..\\drivers\\geckodriver-v0.27.0-win64\\geckodriver.exe"
 PROPERTIES_FILE = "..\\config.properties"
 BLACKLIST_FILE = "..\\blacklist.txt"
-
-
-class BackgroundColors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKCYAN = '\033[96m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
 
 
 class PagePoller:
@@ -68,7 +57,8 @@ class PagePoller:
         print("setting up firefox ...")
         firefox_options = Options()
         # --headless is for hiding the Firefox window, comment out to show again
-        firefox_options.add_argument("--headless")
+        if show_selenium_browser == "false":
+            firefox_options.add_argument("--headless")
         self.driver = webdriver.Firefox(executable_path=os.path.join(os.path.dirname(__file__), GECKODRIVER_PATH), options=firefox_options)
 
         print("opening page ...")
@@ -81,7 +71,7 @@ class PagePoller:
         index = 0
         products = self.products
 
-        while index < 3:
+        while index < pages_to_scan:
             print("finding cards (page: %s) ..." % (index + 1))
 
             self.scroll_to_bottom()
@@ -102,7 +92,7 @@ class PagePoller:
         products.sort(key=lambda p: p.roi, reverse=True)
 
         for product in products:
-            if product.display_string == "":
+            if product.display_string == "" or show_non_mapping == "false" and "Not mapped" in product.display_string:
                 continue
             print(product.display_string)
 
@@ -241,6 +231,10 @@ class PagePoller:
             if height_to_scroll > new_height:
                 break
 
+
+pages_to_scan = 1
+show_non_mapping = "false"
+show_selenium_browser = "false"
 
 pagepoller = PagePoller()
 pagepoller.check_website()
