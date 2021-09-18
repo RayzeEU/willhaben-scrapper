@@ -141,6 +141,7 @@ dmypy.json
 .idea/**/runConfigurations.xml
 .idea/**/vcs.xml
 .idea/**/.gitignore
+.idea/**/encodings.xml
 
 # AWS User-specific
 .idea/**/aws.xml
