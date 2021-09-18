@@ -1,9 +1,10 @@
+import configparser
+import os
 import time
+
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.firefox.options import Options
-import configparser
-import os
 
 from src.background_colors import BackgroundColors
 from src.product import Product
@@ -40,7 +41,10 @@ class PagePoller:
         Scrolls to the bottom of the page
     """
 
-    def __init__(self):
+    def __init__(self, pages_to_scan, show_non_mapping, show_selenium_browser):
+        self.pages_to_scan = pages_to_scan
+        self.show_non_mapping = show_non_mapping
+
         print("reading config ...")
         # Read config file, should contain 'url'
         config = configparser.ConfigParser()
@@ -71,7 +75,7 @@ class PagePoller:
         index = 0
         products = self.products
 
-        while index < pages_to_scan:
+        while index < self.pages_to_scan:
             print("finding cards (page: %s) ..." % (index + 1))
 
             self.scroll_to_bottom()
@@ -92,7 +96,7 @@ class PagePoller:
         products.sort(key=lambda p: p.roi, reverse=True)
 
         for product in products:
-            if product.display_string == "" or show_non_mapping == "false" and "Not mapped" in product.display_string:
+            if product.display_string == "" or self.show_non_mapping == "false" and "Not mapped" in product.display_string:
                 continue
             print(product.display_string)
 
@@ -230,11 +234,3 @@ class PagePoller:
             new_height = self.driver.execute_script("return document.body.scrollHeight")
             if height_to_scroll > new_height:
                 break
-
-
-pages_to_scan = 1
-show_non_mapping = "false"
-show_selenium_browser = "false"
-
-pagepoller = PagePoller()
-pagepoller.check_website()
