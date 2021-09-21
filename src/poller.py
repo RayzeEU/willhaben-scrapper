@@ -135,8 +135,7 @@ class PagePoller:
                 if (len(return_message) > 1900):
                     break
             
-            for backgroundColor in BackgroundColors:
-                return_message = return_message.replace(backgroundColor, "")
+            return_message = return_message.replace(BackgroundColors.OKGREEN, "").replace(BackgroundColors.OKCYAN, "").replace(BackgroundColors.OKBLUE, "").replace(BackgroundColors.ENDC, "")
 
             webhook = Webhook.from_url("https://discord.com/api/webhooks/[webhookUrl]", adapter=RequestsWebhookAdapter())
             webhook.send(return_message)
