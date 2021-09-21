@@ -2,6 +2,8 @@ import configparser
 import os
 import time
 
+from discord import Webhook, RequestsWebhookAdapter
+
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.firefox.options import Options
@@ -12,6 +14,7 @@ from src.product import Product
 GECKODRIVER_PATH = "..\\drivers\\geckodriver-v0.27.0-win64\\geckodriver.exe"
 PROPERTIES_FILE = "..\\config.properties"
 BLACKLIST_FILE = "..\\blacklist.txt"
+LAST_CARD_FILE = "..\\last_card.txt"
 
 
 class PagePoller:
@@ -41,9 +44,10 @@ class PagePoller:
         Scrolls to the bottom of the page
     """
 
-    def __init__(self, pages_to_scan, show_non_mapping, show_selenium_browser):
+    def __init__(self, pages_to_scan, show_non_mapping, hide_selenium_browser, is_looping):
         self.pages_to_scan = pages_to_scan
         self.show_non_mapping = show_non_mapping
+        self.is_looping = is_looping
 
         print("reading config ...")
         # Read config file, should contain 'url'
@@ -61,12 +65,13 @@ class PagePoller:
         print("setting up firefox ...")
         firefox_options = Options()
         # --headless is for hiding the Firefox window, comment out to show again
-        if show_selenium_browser == "false":
+        if hide_selenium_browser:
             firefox_options.add_argument("--headless")
         self.driver = webdriver.Firefox(executable_path=os.path.join(os.path.dirname(__file__), GECKODRIVER_PATH), options=firefox_options)
 
         print("opening page ...")
         self.driver.get(self.config.get('General', 'url'))
+        time.sleep(1)
         self.accept_cookies()
 
         self.products = []
@@ -93,10 +98,13 @@ class PagePoller:
 
         count_matching = self.calculate_card_performances(count_matching, products)
 
+        if (self.is_looping):
+            self.check_new_cards(products)
+
         products.sort(key=lambda p: p.roi, reverse=True)
 
         for product in products:
-            if product.display_string == "" or self.show_non_mapping == "false" and "Not mapped" in product.display_string:
+            if product.display_string == "" or not self.show_non_mapping and "Not mapped" in product.display_string:
                 continue
             print(product.display_string)
 
@@ -104,6 +112,37 @@ class PagePoller:
 
         self.driver.close()
         self.driver.quit()
+
+    def check_new_cards(self, products):
+        with open(os.path.join(os.path.dirname(__file__), LAST_CARD_FILE), "r", encoding="UTF8") as last_card_file:
+            last_card = last_card_file.read()
+            new_products = []
+            last_card_file.close()
+        
+            if (last_card == products[0].name):
+                print("No new cards found.")
+                return
+                
+            for product in products:
+                if (product.name == last_card):
+                    break
+                new_products.append(product)
+            
+            return_message = "-----------------------"
+            
+            for new_product in new_products:
+                return_message = return_message + "\r\n" + new_product.display_string
+                if (len(return_message) > 1900):
+                    break
+            
+            for backgroundColor in BackgroundColors:
+                return_message = return_message.replace(backgroundColor, "")
+
+            webhook = Webhook.from_url("https://discord.com/api/webhooks/[webhookUrl]", adapter=RequestsWebhookAdapter())
+            webhook.send(return_message)
+
+            with open(os.path.join(os.path.dirname(__file__), LAST_CARD_FILE), "w", encoding="UTF8") as last_card_file:
+                last_card_file.write(new_products[0].name)
 
     def calculate_card_performances(self, count_matching, products):
         print("calculating card performances ...")
