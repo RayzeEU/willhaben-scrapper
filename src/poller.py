@@ -150,9 +150,8 @@ class PagePoller:
 
             if "DEFEKT" in product_name_uppercase or product.name in self.blacklist:
                 count_matching = count_matching - 1
-                continue
 
-            #if "1050TI" in product_name_uppercase:
+            #elif "1050TI" in product_name_uppercase:
             #    product.set_product_properties("1050 Ti", 12.3)
 
             #elif "1060" in product_name_uppercase and "3GB" not in product_name_uppercase:
