@@ -137,7 +137,7 @@ class PagePoller:
             
             return_message = return_message.replace(BackgroundColors.OKGREEN, "").replace(BackgroundColors.OKCYAN, "").replace(BackgroundColors.OKBLUE, "").replace(BackgroundColors.ENDC, "")
 
-            webhook = Webhook.from_url("https://discord.com/api/webhooks/[webhookUrl]", adapter=RequestsWebhookAdapter())
+            webhook = Webhook.from_url(self.private_config.get('Webhooks', 'latest-cards'), adapter=RequestsWebhookAdapter())
             webhook.send(return_message)
 
             with open(os.path.join(os.path.dirname(__file__), LAST_CARD_FILE), "w", encoding="UTF8") as last_card_file:

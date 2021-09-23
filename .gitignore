@@ -210,3 +210,6 @@ fabric.properties
 
 # SonarLint
 .idea/sonarlint/
+
+# Private Config
+private.config
