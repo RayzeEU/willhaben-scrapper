@@ -98,7 +98,7 @@ class PagePoller:
 
         count_matching = self.calculate_card_performances(count_matching, products)
 
-        if (self.is_looping):
+        if self.is_looping:
             self.check_new_cards(products)
 
         products.sort(key=lambda p: p.roi, reverse=True)
@@ -119,7 +119,7 @@ class PagePoller:
             new_products = []
             last_card_file.close()
         
-            if (last_card == products[0].name):
+            if last_card == products[0].name:
                 print("No new cards found.")
                 return
                 
@@ -132,7 +132,7 @@ class PagePoller:
             
             for new_product in new_products:
                 return_message = return_message + "\r\n" + new_product.display_string
-                if (len(return_message) > 1900):
+                if len(return_message) > 1900:
                     break
             
             return_message = return_message.replace(BackgroundColors.OKGREEN, "").replace(BackgroundColors.OKCYAN, "").replace(BackgroundColors.OKBLUE, "").replace(BackgroundColors.ENDC, "")
@@ -151,33 +151,15 @@ class PagePoller:
             if "DEFEKT" in product_name_uppercase or product.name in self.blacklist:
                 count_matching = count_matching - 1
 
-            #elif "1050TI" in product_name_uppercase:
-            #    product.set_product_properties("1050 Ti", 12.3)
-
-            #elif "1060" in product_name_uppercase and "3GB" not in product_name_uppercase:
-            #    product.set_product_properties("1060", 35.7)
-
-            #elif "1070TI" in product_name_uppercase:
-            #    product.set_product_properties("1070 Ti", 47.1)
-            #elif "1070" in product_name_uppercase:
-            #    product.set_product_properties("1070", 44.4)
-
             elif "1080TI" in product_name_uppercase:
                 product.set_product_properties("1080 Ti", 68.1)
             elif "1080" in product_name_uppercase:
                 product.set_product_properties("1080", 55.5)
 
-            #elif "1650SUPER" in product_name_uppercase:
-            #    product.set_product_properties("1650 Super", 23.7)
-            #elif "1650" in product_name_uppercase:
-            #    product.set_product_properties("1650", 25.5)
-
             elif "1660SUPER" in product_name_uppercase:
                 product.set_product_properties("1660 Super", 50.4)
             elif "1660TI" in product_name_uppercase:
                 product.set_product_properties("1660 Ti", 49.2)
-            #elif "1660" in product_name_uppercase:
-            #    product.set_product_properties("1660", 41.1)
 
             elif "2060SUPER" in product_name_uppercase:
                 product.set_product_properties("2060 Super", 66.9)
@@ -196,23 +178,11 @@ class PagePoller:
             elif "2080" in product_name_uppercase:
                 product.set_product_properties("2080", 72.9)
 
-            #elif "P2200" in product_name_uppercase:
-            #    product.set_product_properties("P2200", 30.3)
-
-            #elif "390" in product_name_uppercase:
-            #    product.set_product_properties("390", 28.5)
-
             elif "4000" in product_name_uppercase:
                 product.set_product_properties("4000", 59.1)
 
-            #elif "480" in product_name_uppercase:
-            #    product.set_product_properties("480", 43.8)
-
             elif "5700XT" in product_name_uppercase:
                 product.set_product_properties("5700 XT", 86.1)
-
-            #elif "590" in product_name_uppercase:
-            #    product.set_product_properties("590", 44.4)
 
             elif "6600" in product_name_uppercase:
                 product.set_product_properties("6600", 51.9)
@@ -220,8 +190,6 @@ class PagePoller:
             elif "6700" in product_name_uppercase:
                 product.set_product_properties("6700", 70.8)
 
-            #elif "VEGA56" in product_name_uppercase:
-            #    product.set_product_properties("VEGA 56", 51.6)
             elif "VEGA64" in product_name_uppercase:
                 product.set_product_properties("VEGA 64", 66)
 
@@ -235,9 +203,10 @@ class PagePoller:
 
     def scan_for_products_and_add_to(self, products):
         # gERttF = css for the title
-        # fwafsN = css for the price
         elements = self.driver.find_elements_by_css_selector('.gERttF')
+        # fwafsN = css for the price
         price_elements = self.driver.find_elements_by_css_selector('.fwafsN')
+        # fGZgWF = css for the element for one product
         links = self.driver.find_elements_by_css_selector(".fGZgWF")
 
         if len(elements) != len(price_elements) or len(elements) != len(links):
