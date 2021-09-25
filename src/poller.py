@@ -47,10 +47,11 @@ class PagePoller:
         Scrolls to the bottom of the page
     """
 
-    def __init__(self, pages_to_scan, show_non_mapping, hide_selenium_browser, is_looping):
+    def __init__(self, pages_to_scan, show_non_mapping, hide_selenium_browser, is_looping, private_config):
         self.pages_to_scan = pages_to_scan
         self.show_non_mapping = show_non_mapping
         self.is_looping = is_looping
+        self.private_config = private_config
 
         print("reading config ...")
         # Read config file, should contain 'url'
