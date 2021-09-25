@@ -15,6 +15,7 @@ GECKODRIVER_PATH = "..\\drivers\\geckodriver-v0.27.0-win64\\geckodriver.exe"
 PROPERTIES_FILE = "..\\config.properties"
 BLACKLIST_FILE = "..\\blacklist.txt"
 LAST_CARD_FILE = "..\\last_card.txt"
+USABLE_CARDS_FILE = "../usable_cards.properties"
 
 
 class PagePoller:
@@ -61,6 +62,12 @@ class PagePoller:
             self.blacklist = blacklist.read().splitlines()
 
         print("%s cards are blacklisted" % len(self.blacklist))
+
+        # Read the usable cards file, exact card names with the monthly profit
+        config.read(os.path.join(os.path.dirname(__file__), USABLE_CARDS_FILE))
+        self.usable_cards = config
+
+        print("%s cards are usable" % self.usable_cards.items("Cards"))
 
         print("setting up firefox ...")
         firefox_options = Options()
@@ -145,60 +152,25 @@ class PagePoller:
 
     def calculate_card_performances(self, count_matching, products):
         print("calculating card performances ...")
+        usable_cards = self.usable_cards.items("Cards")
         for product in products:
-            product_name_uppercase = product.name.replace(' ', '').upper()
+            product_name_lowercase = product.name.replace(' ', '').lower()
 
-            if "DEFEKT" in product_name_uppercase or product.name in self.blacklist:
+            if "defekt" in product_name_lowercase\
+                    or "kaputt" in product_name_lowercase \
+                    or product.name in self.blacklist:
                 count_matching = count_matching - 1
-
-            elif "1080TI" in product_name_uppercase:
-                product.set_product_properties("1080 Ti", 68.1)
-            elif "1080" in product_name_uppercase:
-                product.set_product_properties("1080", 55.5)
-
-            elif "1660SUPER" in product_name_uppercase:
-                product.set_product_properties("1660 Super", 50.4)
-            elif "1660TI" in product_name_uppercase:
-                product.set_product_properties("1660 Ti", 49.2)
-
-            elif "2060SUPER" in product_name_uppercase:
-                product.set_product_properties("2060 Super", 66.9)
-            elif "2060" in product_name_uppercase:
-                product.set_product_properties("2060", 51.9)
-
-            elif "2070SUPER" in product_name_uppercase:
-                product.set_product_properties("2070 Super", 71.4)
-            elif "2070" in product_name_uppercase:
-                product.set_product_properties("2070", 67.8)
-
-            elif "2080SUPER" in product_name_uppercase:
-                product.set_product_properties("2080 Super", 72)
-            elif "2080TI" in product_name_uppercase:
-                product.set_product_properties("2080 Ti", 77.9)
-            elif "2080" in product_name_uppercase:
-                product.set_product_properties("2080", 72.9)
-
-            elif "4000" in product_name_uppercase:
-                product.set_product_properties("4000", 59.1)
-
-            elif "5700XT" in product_name_uppercase:
-                product.set_product_properties("5700 XT", 86.1)
-
-            elif "6600" in product_name_uppercase:
-                product.set_product_properties("6600", 51.9)
-
-            elif "6700" in product_name_uppercase:
-                product.set_product_properties("6700", 70.8)
-
-            elif "VEGA64" in product_name_uppercase:
-                product.set_product_properties("VEGA 64", 66)
-
-            elif "3090" in product_name_uppercase:
-                product.set_product_properties("3090", 191.4)
 
             else:
-                product.set_product_properties("Not mapped", 1)
-                count_matching = count_matching - 1
+                found = False
+                for usable_card in usable_cards:
+                    if usable_card[0] in product_name_lowercase:
+                        product.set_product_properties(usable_card[0], float(usable_card[1]))
+                        found = True
+
+                if not found:
+                    product.set_product_properties("Not mapped", 1)
+                    count_matching = count_matching - 1
         return count_matching
 
     def scan_for_products_and_add_to(self, products):
