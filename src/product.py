@@ -38,7 +38,7 @@ class Product:
         return_of_investment = float(self.price) / profit_per_month
         self.roi = float(return_of_investment)
 
-        self.display_string = "ROI {6}\'{5}\' - {0}€{7}: {3}{1}{4} (Full Name: {2} -> {8})"\
+        self.display_string = "{6}\'{5}\' - {0}€{7} - ROI: {3}{1}{4} (Full Name: {2} -> {8})"\
             .format(self.price,
                     '{0:.2f}'.format(return_of_investment),
                     self.name,
