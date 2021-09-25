@@ -11,6 +11,8 @@ from selenium.webdriver.firefox.options import Options
 from src.background_colors import BackgroundColors
 from src.product import Product
 
+NOT_MAPPED = "Not mapped"
+
 GECKODRIVER_PATH = "..\\drivers\\geckodriver-v0.27.0-win64\\geckodriver.exe"
 PROPERTIES_FILE = "..\\config.properties"
 BLACKLIST_FILE = "..\\blacklist.txt"
@@ -82,98 +84,118 @@ class PagePoller:
         self.accept_cookies()
 
         self.products = []
+        self.products_not_mapped = []
+        self.products_mapped = []
 
     def check_website(self):
-        index = 0
-        products = self.products
+        self.scan_pages_for_products()
 
+        self.calculate_card_performances()
+
+        if self.is_looping:
+            self.check_new_cards()
+
+        self.print_result_to_console()
+        self.send_mapped_products_to_discord()
+
+        self.driver.close()
+        self.driver.quit()
+
+    def scan_pages_for_products(self):
+        index = 0
         while index < self.pages_to_scan:
             print("finding cards (page: %s) ..." % (index + 1))
 
             self.scroll_to_bottom()
-            self.scan_for_products_and_add_to(products)
+            self.scan_for_products_and_add_to()
 
             self.driver.find_element_by_css_selector("a[data-testid=\"pagination-bottom-next-button\"]").click()
 
             print("finished finding cards (page: %s) ..." % (index + 1))
             index = index + 1
 
-        count_products = len(products)
-        count_matching = len(products)
+        print("found %s cards ..." % len(self.products))
 
-        print("found %s cards ..." % count_products)
+    def print_result_to_console(self):
+        products = self.products
+        products_mapped = self.products_mapped
+        products_not_mapped = self.products_not_mapped
 
-        count_matching = self.calculate_card_performances(count_matching, products)
+        print(BackgroundColors.OKCYAN + "Total products found: %s" % len(products) + BackgroundColors.ENDC)
 
-        if self.is_looping:
-            self.check_new_cards(products)
+        if self.show_non_mapping:
+            print(BackgroundColors.WARNING + "Total products not matched: %s" % len(
+                products_not_mapped) + BackgroundColors.ENDC)
+            products_not_mapped.sort(key=lambda p: p.roi, reverse=True)
+            for product in products_not_mapped:
+                print(product.display_string)
 
-        products.sort(key=lambda p: p.roi, reverse=True)
-
-        for product in products:
-            if product.display_string == "" or not self.show_non_mapping and "Not mapped" in product.display_string:
-                continue
+        print(BackgroundColors.OKCYAN + "Total products matched: %s" % len(products_mapped) + BackgroundColors.ENDC)
+        products_mapped.sort(key=lambda p: p.roi, reverse=True)
+        for product in products_mapped:
             print(product.display_string)
 
-        print(BackgroundColors.OKCYAN + "Total Products matched/found: %s/%s" % (count_matching, count_products) + BackgroundColors.ENDC)
+    def send_mapped_products_to_discord(self):
+        return_message = ""
 
-        self.driver.close()
-        self.driver.quit()
+        products_mapped_discord = self.products_mapped.copy()
+        products_mapped_discord.sort(key=lambda p: p.roi, reverse=False)
+        for product in products_mapped_discord:
+            if return_message != "":
+                return_message = return_message + "\r\n"
 
-    def check_new_cards(self, products):
+            return_message = return_message + product.display_string
+            if len(return_message) > 1900:
+                break
+
+        return_message = return_message.replace(BackgroundColors.OKGREEN, "").replace(BackgroundColors.OKCYAN, "").replace(BackgroundColors.OKBLUE, "").replace(BackgroundColors.ENDC, "")
+        webhook = Webhook.from_url(self.private_config.get('Webhooks', 'latest-cards'), adapter=RequestsWebhookAdapter())
+        webhook.send(return_message)
+
+    def check_new_cards(self):
+        products = self.products_mapped
         with open(os.path.join(os.path.dirname(__file__), LAST_CARD_FILE), "r", encoding="UTF8") as last_card_file:
             last_card = last_card_file.read()
             new_products = []
             last_card_file.close()
-        
+
             if last_card == products[0].name:
+                self.products_mapped = []
                 print("No new cards found.")
                 return
-                
+
             for product in products:
-                if (product.name == last_card):
+                if product.name == last_card:
                     break
                 new_products.append(product)
-            
-            return_message = "-----------------------"
-            
-            for new_product in new_products:
-                return_message = return_message + "\r\n" + new_product.display_string
-                if len(return_message) > 1900:
-                    break
-            
-            return_message = return_message.replace(BackgroundColors.OKGREEN, "").replace(BackgroundColors.OKCYAN, "").replace(BackgroundColors.OKBLUE, "").replace(BackgroundColors.ENDC, "")
-
-            webhook = Webhook.from_url(self.private_config.get('Webhooks', 'latest-cards'), adapter=RequestsWebhookAdapter())
-            webhook.send(return_message)
 
             with open(os.path.join(os.path.dirname(__file__), LAST_CARD_FILE), "w", encoding="UTF8") as last_card_file:
                 last_card_file.write(new_products[0].name)
 
-    def calculate_card_performances(self, count_matching, products):
+    def calculate_card_performances(self):
         print("calculating card performances ...")
         usable_cards = self.usable_cards.items("Cards")
-        for product in products:
+        for product in self.products:
             product_name_lowercase = product.name.replace(' ', '').lower()
 
-            if "defekt" in product_name_lowercase\
-                    or "kaputt" in product_name_lowercase \
-                    or product.name in self.blacklist:
-                count_matching = count_matching - 1
-
-            else:
+            if "defekt" not in product_name_lowercase\
+                    and "kaputt" not in product_name_lowercase\
+                    and "lhr" not in product_name_lowercase\
+                    and product.name not in self.blacklist:
                 found = False
                 for usable_card in usable_cards:
                     if usable_card[0] in product_name_lowercase:
                         product.set_product_properties(usable_card[0], float(usable_card[1]))
+                        self.products_mapped.append(product)
                         found = True
 
                 if not found:
-                    product.set_product_properties("Not mapped", 1)
-                    count_matching = count_matching - 1
-        return count_matching
+                    product.set_product_properties(NOT_MAPPED, 1)
+                    self.products_not_mapped.append(product)
 
-    def scan_for_products_and_add_to(self, products):
+    def scan_for_products_and_add_to(self):
+        products = self.products
+
         # gERttF = css for the title
         elements = self.driver.find_elements_by_css_selector('.gERttF')
         # fwafsN = css for the price
