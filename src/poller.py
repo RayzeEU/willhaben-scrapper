@@ -149,9 +149,10 @@ class PagePoller:
             if len(return_message) > 1900:
                 break
 
-        return_message = return_message.replace(BackgroundColors.OKGREEN, "").replace(BackgroundColors.OKCYAN, "").replace(BackgroundColors.OKBLUE, "").replace(BackgroundColors.ENDC, "")
-        webhook = Webhook.from_url(self.private_config.get('Webhooks', 'latest-cards'), adapter=RequestsWebhookAdapter())
-        webhook.send(return_message)
+        if return_message != "":
+            return_message = return_message.replace(BackgroundColors.OKGREEN, "").replace(BackgroundColors.OKCYAN, "").replace(BackgroundColors.OKBLUE, "").replace(BackgroundColors.ENDC, "")
+            webhook = Webhook.from_url(self.private_config.get('Webhooks', 'latest-cards'), adapter=RequestsWebhookAdapter())
+            webhook.send(return_message)
 
     def check_new_cards(self):
         products = self.products_mapped
