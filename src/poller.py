@@ -17,7 +17,7 @@ GECKODRIVER_PATH = "..\\drivers\\geckodriver-v0.27.0-win64\\geckodriver.exe"
 PROPERTIES_FILE = "..\\config.properties"
 BLACKLIST_FILE = "..\\blacklist.txt"
 LAST_CARD_FILE = "..\\last_card.txt"
-USABLE_CARDS_FILE = "../usable_cards.properties"
+USABLE_CARDS_FILE = "..\\usable_cards.properties"
 
 
 class PagePoller:
