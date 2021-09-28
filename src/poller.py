@@ -14,8 +14,6 @@ from src.product import Product
 NOT_MAPPED = "Not mapped"
 
 GECKODRIVER_PATH = "..\\drivers\\geckodriver-v0.27.0-win64\\geckodriver.exe"
-PROPERTIES_FILE = "..\\config.properties"
-BLACKLIST_FILE = "..\\blacklist.txt"
 LAST_CARD_FILE = "..\\last_card.txt"
 USABLE_CARDS_FILE = "..\\usable_cards.properties"
 
@@ -47,27 +45,16 @@ class PagePoller:
         Scrolls to the bottom of the page
     """
 
-    def __init__(self, show_non_mapping, hide_selenium_browser, is_looping, private_config):
+    def __init__(self, show_non_mapping, hide_selenium_browser, is_looping, private_config, config):
         self.show_non_mapping = show_non_mapping
         self.is_looping = is_looping
         self.private_config = private_config
-
-        print("reading config ...")
-        # Read config file, should contain 'url'
-        config = configparser.ConfigParser()
-        config.read(os.path.join(os.path.dirname(__file__), PROPERTIES_FILE))
         self.config = config
 
-        print("reading blacklist ...")
-        # Read the blacklist file, exact product names in this file will be ignored
-        with open(os.path.join(os.path.dirname(__file__), BLACKLIST_FILE), "r", encoding="UTF8") as blacklist:
-            self.blacklist = blacklist.read().splitlines()
-
-        print("%s cards are blacklisted" % len(self.blacklist))
-
         # Read the usable cards file, exact card names with the monthly profit
-        config.read(os.path.join(os.path.dirname(__file__), USABLE_CARDS_FILE))
-        self.usable_cards = config
+        config_reader = configparser.ConfigParser()
+        config_reader.read(os.path.join(os.path.dirname(__file__), USABLE_CARDS_FILE))
+        self.usable_cards = config_reader
 
         print("%s cards are usable" % self.usable_cards.items("Cards"))
 
@@ -79,7 +66,7 @@ class PagePoller:
         self.driver = webdriver.Firefox(executable_path=os.path.join(os.path.dirname(__file__), GECKODRIVER_PATH), options=firefox_options)
 
         print("opening page ...")
-        self.driver.get(self.config.get('General', 'url'))
+        self.driver.get(config["url"])
         time.sleep(1)
         self.accept_cookies()
 
@@ -178,7 +165,7 @@ class PagePoller:
             if "defekt" not in product_name_lowercase\
                     and "kaputt" not in product_name_lowercase\
                     and "lhr" not in product_name_lowercase\
-                    and product.name not in self.blacklist:
+                    and product.name not in self.config["blacklist"]:
                 found = False
                 for usable_card in usable_cards:
                     if usable_card[0] in product_name_lowercase:

@@ -1,9 +1,10 @@
 import configparser
 import os
+import json
+import time
+
 from src.poller import PagePoller
 from discord import Webhook, RequestsWebhookAdapter
-
-import time
 
 PRIVATE_CONFIG_FILE = "private.config"
 
@@ -13,10 +14,14 @@ private_config.read(os.path.join(os.path.dirname(__file__), PRIVATE_CONFIG_FILE)
 
 webhook = Webhook.from_url(private_config.get('Webhooks', 'bot-status'), adapter=RequestsWebhookAdapter())
 
+print("reading config ...")
+with open("config.json") as config_json:
+    config = json.load(config_json)
+
 while True:
     webhook.send("Running...")
 
-    pagepoller = PagePoller(False, True, True, private_config)
+    pagepoller = PagePoller(False, True, True, private_config, config)
     pagepoller.check_website()
 
     time.sleep(30)
