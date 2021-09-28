@@ -24,12 +24,13 @@ class Product:
         Sets return of investment and display string properties
     """
 
-    def __init__(self, name, price, link):
+    def __init__(self, name, price, link, id_nummer):
         self.name = name
         self.price = price
         self.roi = 0.00
         self.display_string = ""
         self.link = link
+        self.id_nummer = id_nummer
 
     def set_product_properties(self, card_name, profit_per_month):
         if self.price == '':

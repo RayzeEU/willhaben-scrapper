@@ -153,18 +153,18 @@ class PagePoller:
             new_products = []
             last_card_file.close()
 
-            if last_card == products[0].name:
+            if last_card == products[0].id_nummer:
                 self.products_mapped = []
                 print("No new cards found.")
                 return
 
             for product in products:
-                if product.name == last_card:
+                if product.id_nummer == last_card:
                     break
                 new_products.append(product)
 
             with open(os.path.join(os.path.dirname(__file__), LAST_CARD_FILE), "w", encoding="UTF8") as last_card_file:
-                last_card_file.write(new_products[0].name)
+                last_card_file.write(new_products[0].id_nummer)
 
             # Only usw new products as mapped ones -> TODO update console log, because some were mapped, but not new
             self.products_mapped = new_products
@@ -197,17 +197,19 @@ class PagePoller:
         elements = self.driver.find_elements_by_css_selector('.gERttF')
         # fwafsN = css for the price
         price_elements = self.driver.find_elements_by_css_selector('.fwafsN')
-        # fGZgWF = css for the element for one product
+        # fGZgWF = css for the element with the link attribute
         links = self.driver.find_elements_by_css_selector(".fGZgWF")
+        # fGZgWF = css for the element with the id attribute
+        ids = self.driver.find_elements_by_css_selector(".eVfVKZ")
 
-        if len(elements) != len(price_elements) or len(elements) != len(links):
-            print(BackgroundColors.WARNING + "Warning: There is a mismatch between element count, prices count and link count." + BackgroundColors.ENDC)
+        if len(elements) != len(price_elements) or len(elements) != len(links) or len(elements) != len(ids):
+            print(BackgroundColors.WARNING + "Warning: There is a mismatch between element count, prices count, link count and id count." + BackgroundColors.ENDC)
         else:
-            print(BackgroundColors.OKCYAN + "No mismatches between element and price count found." + BackgroundColors.ENDC)
+            print(BackgroundColors.OKCYAN + "No mismatches found." + BackgroundColors.ENDC)
 
-        for element, price, link in zip(elements, price_elements, links):
+        for element, price, link, id_element in zip(elements, price_elements, links, ids):
             products.append(
-                Product(element.text, price.text.replace('€', '').replace(' ', '').replace(',', '.'), link.get_attribute("href")))
+                Product(element.text, price.text.replace('€', '').replace(' ', '').replace(',', '.'), link.get_attribute("href"), id_element.get_attribute("id")))
 
     def accept_cookies(self):
         # Accept Cookies button
