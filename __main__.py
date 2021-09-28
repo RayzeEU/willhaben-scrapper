@@ -16,7 +16,7 @@ webhook = Webhook.from_url(private_config.get('Webhooks', 'bot-status'), adapter
 while True:
     webhook.send("Running...")
 
-    pagepoller = PagePoller(1, False, True, True, private_config)
+    pagepoller = PagePoller(False, True, True, private_config)
     pagepoller.check_website()
 
     time.sleep(30)

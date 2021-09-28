@@ -47,8 +47,7 @@ class PagePoller:
         Scrolls to the bottom of the page
     """
 
-    def __init__(self, pages_to_scan, show_non_mapping, hide_selenium_browser, is_looping, private_config):
-        self.pages_to_scan = pages_to_scan
+    def __init__(self, show_non_mapping, hide_selenium_browser, is_looping, private_config):
         self.show_non_mapping = show_non_mapping
         self.is_looping = is_looping
         self.private_config = private_config
@@ -103,17 +102,10 @@ class PagePoller:
         self.driver.quit()
 
     def scan_pages_for_products(self):
-        index = 0
-        while index < self.pages_to_scan:
-            print("finding cards (page: %s) ..." % (index + 1))
+        print("finding cards ...")
 
-            self.scroll_to_bottom()
-            self.scan_for_products_and_add_to()
-
-            self.driver.find_element_by_css_selector("a[data-testid=\"pagination-bottom-next-button\"]").click()
-
-            print("finished finding cards (page: %s) ..." % (index + 1))
-            index = index + 1
+        self.scroll_to_bottom()
+        self.scan_for_products_and_add_to()
 
         print("found %s cards ..." % len(self.products))
 
