@@ -65,16 +65,19 @@ class PagePoller:
             firefox_options.add_argument("--headless")
         self.driver = webdriver.Firefox(executable_path=os.path.join(os.path.dirname(__file__), GECKODRIVER_PATH), options=firefox_options)
 
+        self.driver.refresh()
+
         print("opening page ...")
         self.driver.get(config["url"])
         time.sleep(1)
         self.accept_cookies()
 
-        self.products = []
-        self.products_not_mapped = []
-        self.products_mapped = []
+        self.reset_products()
 
     def check_website(self):
+        self.driver.refresh()
+        self.reset_products()
+
         self.scan_pages_for_products()
 
         self.calculate_card_performances()
@@ -85,8 +88,10 @@ class PagePoller:
         self.print_result_to_console()
         self.send_mapped_products_to_discord()
 
-        self.driver.close()
-        self.driver.quit()
+    def reset_products(self):
+        self.products = []
+        self.products_not_mapped = []
+        self.products_mapped = []
 
     def scan_pages_for_products(self):
         print("finding cards ...")

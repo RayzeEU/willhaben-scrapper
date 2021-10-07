@@ -18,10 +18,11 @@ print("reading config ...")
 with open("config.json") as config_json:
     config = json.load(config_json)
 
+pagepoller = PagePoller(False, False, True, private_config, config)
+
 while True:
     webhook.send("Running...")
 
-    pagepoller = PagePoller(False, True, True, private_config, config)
     pagepoller.check_website()
 
     time.sleep(30)
