@@ -1,4 +1,0 @@
-configparser~=5.0.2
-discord~=1.7.3
-selenium~=3.141.0
-setuptools~=56.0.0
