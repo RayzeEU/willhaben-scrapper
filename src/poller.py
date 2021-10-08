@@ -1,4 +1,3 @@
-import configparser
 import os
 import time
 
@@ -15,7 +14,6 @@ NOT_MAPPED = "Not mapped"
 
 GECKODRIVER_PATH = "../resources/geckodriver-v0.27.0-win64/geckodriver.exe"
 LAST_CARD_FILE = "../resources/last_card.txt"
-USABLE_CARDS_FILE = "../resources/usable_cards.properties"
 
 
 class PagePoller:
@@ -51,12 +49,7 @@ class PagePoller:
         self.private_config = private_config
         self.config = config
 
-        # Read the usable cards file, exact card names with the monthly profit
-        config_reader = configparser.ConfigParser()
-        config_reader.read(os.path.join(os.path.dirname(__file__), USABLE_CARDS_FILE))
-        self.usable_cards = config_reader
-
-        print("%s cards are usable" % self.usable_cards.items("Cards"))
+        print("%s cards are usable" % len(self.config["usable_cards"]))
 
         print("setting up firefox ...")
         firefox_options = Options()
@@ -168,7 +161,7 @@ class PagePoller:
 
     def calculate_card_performances(self):
         print("calculating card performances ...")
-        usable_cards = self.usable_cards.items("Cards")
+        usable_cards = self.config["usable_cards"]
         for product in self.products:
             product_name_lowercase = product.name.replace(' ', '').lower()
 
@@ -178,8 +171,8 @@ class PagePoller:
                     and product.name not in self.config["blacklist"]:
                 found = False
                 for usable_card in usable_cards:
-                    if usable_card[0] in product_name_lowercase:
-                        product.set_product_properties(usable_card[0], float(usable_card[1]))
+                    if usable_card["name"].lower() in product_name_lowercase:
+                        product.set_product_properties(usable_card["name"], float(usable_card["monthly_income"]))
                         self.products_mapped.append(product)
                         found = True
 

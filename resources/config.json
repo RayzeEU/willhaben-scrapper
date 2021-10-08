@@ -9,5 +9,75 @@
     "ASUS dual - gtx1060  o3g",
     "Sapphire Rx 480 4gb",
     "MSI Radeon RX480 4GB Twin Frozr"
+  ],
+  "usable_cards": [
+    {
+      "name": "HX90",
+      "monthly_income": 139.9
+    },
+    {
+      "name": "3090",
+      "monthly_income": 172.98
+    },
+    {
+      "name": "3080TI",
+      "monthly_income": 91.81
+    },
+    {
+      "name": "3080",
+      "monthly_income": 142.28
+    },
+    {
+      "name": "3070TI",
+      "monthly_income": 61.45
+    },
+    {
+      "name": "3070",
+      "monthly_income": 87.48
+    },
+    {
+      "name": "3060TI",
+      "monthly_income": 87.48
+    },
+    {
+      "name": "3060",
+      "monthly_income": 67.88
+    },
+    {
+      "name": "2080TI",
+      "monthly_income": 81.01
+    },
+    {
+      "name": "2080SUPER",
+      "monthly_income": 54.58
+    },
+    {
+      "name": "2080",
+      "monthly_income": 56.17
+    },
+    {
+      "name": "2070SUPER",
+      "monthly_income": 53.3
+    },
+    {
+      "name": "2070",
+      "monthly_income": 53.66
+    },
+    {
+      "name": "2060SUPER",
+      "monthly_income": 53.66
+    },
+    {
+      "name": "1660TI",
+      "monthly_income": 43.34
+    },
+    {
+      "name": "1660SUPER",
+      "monthly_income": 43.34
+    },
+    {
+      "name": "1660",
+      "monthly_income": 34.36
+    }
   ]
 }
