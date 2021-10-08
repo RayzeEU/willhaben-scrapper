@@ -17,32 +17,6 @@ LAST_CARD_FILE = "../resources/last_card.txt"
 
 
 class PagePoller:
-    """
-    A class used to represent the web page which is crawled
-
-    ...
-
-    Attributes
-    ----------
-    config : ConfigParser
-        the config of the tool
-    products : list of src.product.Product
-        a list of products listed on the website
-    driver : Firefox
-        the driver which is used by selenium to open/scrap the website
-
-    Methods
-    -------
-    check_website()
-        Loops through the webpage, adds products to the products list and close the browser
-    accept_cookies()
-        Creates the driver for the browser and clicks the cookies button
-    refresh_page()
-        Re-opens the browser
-    scroll_to_bottom()
-        Scrolls to the bottom of the page
-    """
-
     def __init__(self, show_non_mapping, hide_selenium_browser, is_looping, private_config, config):
         self.show_non_mapping = show_non_mapping
         self.is_looping = is_looping
