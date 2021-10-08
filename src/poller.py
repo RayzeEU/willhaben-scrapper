@@ -13,9 +13,9 @@ from src.product import Product
 
 NOT_MAPPED = "Not mapped"
 
-GECKODRIVER_PATH = "..\\drivers\\geckodriver-v0.27.0-win64\\geckodriver.exe"
-LAST_CARD_FILE = "..\\last_card.txt"
-USABLE_CARDS_FILE = "..\\usable_cards.properties"
+GECKODRIVER_PATH = "../resources/geckodriver-v0.27.0-win64/geckodriver.exe"
+LAST_CARD_FILE = "../last_card.txt"
+USABLE_CARDS_FILE = "../usable_cards.properties"
 
 
 class PagePoller:
