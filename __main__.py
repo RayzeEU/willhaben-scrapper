@@ -15,7 +15,7 @@ private_config.read(os.path.join(os.path.dirname(__file__), PRIVATE_CONFIG_FILE)
 webhook = Webhook.from_url(private_config.get('Webhooks', 'bot-status'), adapter=RequestsWebhookAdapter())
 
 print("reading config ...")
-with open("config.json") as config_json:
+with open("resources/config.json") as config_json:
     config = json.load(config_json)
 
 pagepoller = PagePoller(False, True, True, private_config, config)
