@@ -6,7 +6,7 @@ import time
 from src.poller import PagePoller
 from discord import Webhook, RequestsWebhookAdapter
 
-PRIVATE_CONFIG_FILE = "resources/private.config"
+PRIVATE_CONFIG_FILE = "private.config"
 
 print(os.path.join(os.path.dirname(__file__), PRIVATE_CONFIG_FILE))
 private_config = configparser.ConfigParser()
