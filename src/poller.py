@@ -63,7 +63,9 @@ class PagePoller:
         # --headless is for hiding the Firefox window, comment out to show again
         if hide_selenium_browser:
             firefox_options.add_argument("--headless")
-        self.driver = webdriver.Firefox(executable_path=os.path.join(os.path.dirname(__file__), GECKODRIVER_PATH), options=firefox_options)
+
+        # set service log path to "nul" to disable logging - works only for windows
+        self.driver = webdriver.Firefox(executable_path=os.path.join(os.path.dirname(__file__), GECKODRIVER_PATH), options=firefox_options, service_log_path="nul")
 
         self.driver.refresh()
 
