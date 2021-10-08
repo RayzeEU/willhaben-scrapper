@@ -145,6 +145,9 @@ class PagePoller:
             new_products = []
             last_card_file.close()
 
+            if len(products) == 0:
+                return
+                
             if last_card == products[0].id_nummer:
                 self.products_mapped = []
                 print("No new cards found.")
