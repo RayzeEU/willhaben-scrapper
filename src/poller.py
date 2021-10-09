@@ -34,8 +34,6 @@ class PagePoller:
         # set service log path to "nul" to disable logging - works only for windows
         self.driver = webdriver.Firefox(executable_path=os.path.join(os.path.dirname(__file__), GECKODRIVER_PATH), options=firefox_options, service_log_path="nul")
 
-        self.driver.refresh()
-
         print("opening page ...")
         self.driver.get(config["url"])
         time.sleep(1)
