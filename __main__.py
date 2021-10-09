@@ -25,11 +25,11 @@ difficulty = eth_data["difficulty"]
 reward = eth_data["reward_block"]
 price = eth_data["price"]
 
-# actual hashrate (all 4 cards together)
-hash_rate = 141880000
+# actual mega hash rate (all 4 cards together)
+mega_hash_rate = 141.88
 
 # ((hash_rate [h/s] * reward) / difficulty) * (1 - pool_fee) * 3600 * 24
-dollar_per_day = ((hash_rate * reward) / difficulty) * (1 - 0.02) * 3600 * 24 * price
+dollar_per_day = ((mega_hash_rate * 1000000 * reward) / difficulty) * (1 - 0.02) * 3600 * 24 * price
 print(dollar_per_day)
 
 pagepoller = PagePoller(False, True, True, private_config, config)
