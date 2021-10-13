@@ -157,6 +157,7 @@ class PagePoller:
 
             with open(os.path.join(os.path.dirname(__file__), LAST_CARD_FILE), "w", encoding="UTF8") as last_card_file:
                 last_card_file.write(new_products[0].id_nummer)
+                last_card_file.close()
 
             # Only usw new products as mapped ones -> TODO update console log, because some were mapped, but not new
             self.products_mapped = new_products
