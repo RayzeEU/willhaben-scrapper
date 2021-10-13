@@ -6,6 +6,7 @@ from discord import Webhook, RequestsWebhookAdapter
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.firefox.options import Options
+from datetime import datetime
 
 from src.background_colors import BackgroundColors
 from src.product import Product
@@ -14,6 +15,7 @@ NOT_MAPPED = "Not mapped"
 
 GECKODRIVER_PATH = "../resources/geckodriver-v0.27.0-win64/geckodriver.exe"
 LAST_CARD_FILE = "../resources/last_card.txt"
+LAST_CARD_TIMESTAMP_FILE = "../resources/last_card_timestamp.txt"
 
 
 class PagePoller:
@@ -137,6 +139,14 @@ class PagePoller:
 
     def check_new_cards(self):
         products = self.products_mapped
+
+        with open(os.path.join(os.path.dirname(__file__), LAST_CARD_TIMESTAMP_FILE), "r", encoding="UTF8") as last_card_timestamp_file:
+            print(datetime.strptime(last_card_timestamp_file.read(), "%d.%m.%Y %H:%M:%S"))
+            with open(os.path.join(os.path.dirname(__file__), LAST_CARD_TIMESTAMP_FILE), "w", encoding="UTF8") as last_card_timestamp_file:
+                last_card_timestamp_file.write(datetime.now().strftime("%d.%m.%Y %H:%M:%S"))
+                last_card_timestamp_file.close()
+            last_card_timestamp_file.close()
+
         with open(os.path.join(os.path.dirname(__file__), LAST_CARD_FILE), "r", encoding="UTF8") as last_card_file:
             last_card = last_card_file.read()
             new_products = []
