@@ -152,18 +152,18 @@ class PagePoller:
             if len(products) == 0:
                 return
 
-            if last_card == products[0].id_nummer:
+            if last_card == products[0].id_number:
                 self.products_mapped = []
                 print("No new cards found.")
                 return
 
             for product in products:
-                if product.id_nummer == last_card:
+                if product.id_number == last_card:
                     break
                 new_products.append(product)
 
             with open(os.path.join(os.path.dirname(__file__), LAST_CARD_FILE), "w", encoding="UTF8") as last_card_file:
-                last_card_file.write(new_products[0].id_nummer)
+                last_card_file.write(new_products[0].id_number)
                 last_card_file.close()
 
             # Only usw new products as mapped ones -> TODO update console log, because some were mapped, but not new
