@@ -66,7 +66,7 @@ class PagePoller:
             self.check_new_cards()
 
         self.print_result_to_console()
-        # self.send_mapped_products_to_discord()
+        self.send_mapped_products_to_discord()
 
     def scan_pages_for_products(self):
         print("finding cards ...")
