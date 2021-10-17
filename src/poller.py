@@ -66,7 +66,7 @@ class PagePoller:
             self.check_new_cards()
 
         self.print_result_to_console()
-        self.send_mapped_products_to_discord()
+        # self.send_mapped_products_to_discord()
 
     def scan_pages_for_products(self):
         print("finding cards ...")
@@ -113,7 +113,7 @@ class PagePoller:
 
         for element, price, link, id_element in zip(elements, price_elements, links, ids):
             products.append(
-                Product(element.text, price.text.replace('€', '').replace(' ', '').replace(',', '.'), link.get_attribute("href"), id_element.get_attribute("id")))
+                Product(element.text, price.text, link.get_attribute("href"), id_element.get_attribute("id")))
 
     def calculate_card_performances(self):
         print("calculating card performances ...")

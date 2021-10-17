@@ -1,3 +1,4 @@
+from currency_translator import CurrencyTranslator
 from src.background_colors import BackgroundColors
 
 
@@ -26,7 +27,7 @@ class Product:
 
     def __init__(self, name, price, link, id_number):
         self.name = name
-        self.price = price
+        self.price = CurrencyTranslator.text_to_float(price)
         self.roi = 0.00
         self.display_string = ""
         self.link = link
@@ -39,8 +40,8 @@ class Product:
         return_of_investment = float(self.price) / profit_per_month
         self.roi = float(return_of_investment)
 
-        self.display_string = "{6}\'{5}\' - {0}€{7} - ROI: {3}{1}{4} (Full Name: {2} -> {8})"\
-            .format(self.price,
+        self.display_string = "{6}\'{5}\' - {0}{7} - ROI: {3}{1}{4} (Full Name: {2} -> {8})"\
+            .format(CurrencyTranslator.float_to_text(self.price),
                     '{0:.2f}'.format(return_of_investment),
                     self.name,
                     BackgroundColors.OKGREEN,
