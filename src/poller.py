@@ -121,10 +121,7 @@ class PagePoller:
         for product in self.products:
             product_name_lowercase = product.name.replace(' ', '').lower()
 
-            if "defekt" not in product_name_lowercase \
-                    and "kaputt" not in product_name_lowercase \
-                    and "lhr" not in product_name_lowercase \
-                    and "tausch" not in product_name_lowercase \
+            if product.name not in self.config["blacklist_words"] \
                     and product.name not in self.config["blacklist"]:
                 found = False
                 for usable_card in usable_cards:

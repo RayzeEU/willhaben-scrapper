@@ -10,6 +10,12 @@
     "Sapphire Rx 480 4gb",
     "MSI Radeon RX480 4GB Twin Frozr"
   ],
+  "blacklist_words": [
+    "defekt",
+    "kaputt",
+    "lhr",
+    "tausch"
+  ],
   "usable_cards": [
     {
       "name": "HX90",
