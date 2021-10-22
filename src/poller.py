@@ -31,7 +31,9 @@ class PagePoller:
             firefox_options.add_argument("--headless")
 
         # set service log path to "nul" to disable logging - works only for windows
-        self.driver = webdriver.Firefox(executable_path=os.path.join(os.path.dirname(__file__), GECKODRIVER_PATH), options=firefox_options, service_log_path="nul")
+        self.driver = webdriver.Firefox(executable_path=os.path.join(os.path.dirname(__file__), GECKODRIVER_PATH),
+                                        options=firefox_options,
+                                        service_log_path="nul")
 
         print("opening page ...")
         self.driver.get(config["url"])
@@ -94,7 +96,7 @@ class PagePoller:
         timestamps = self.driver.find_elements_by_css_selector(".bOajya > p")
 
         if len(elements) != len(price_elements) or len(elements) != len(links) or len(elements) != len(timestamps):
-            print(BackgroundColors.WARNING + "Warning: There is a mismatch between element count, prices count, link count and id count." + BackgroundColors.ENDC)
+            print(BackgroundColors.WARNING + "Warning: There is a mismatch between the element data counters." + BackgroundColors.ENDC)
         else:
             print(BackgroundColors.OKCYAN + "No mismatches found." + BackgroundColors.ENDC)
 
@@ -105,10 +107,15 @@ class PagePoller:
                 Product(element.text, price.text, link.get_attribute("href"), timestamp.text))
 
     def check_new_cards(self):
-        with open(os.path.join(os.path.dirname(__file__), LAST_CARD_TIMESTAMP_FILE), "r", encoding="UTF8") as last_card_timestamp_file:
+        check_timestamp = datetime.now()
+
+        with open(os.path.join(os.path.dirname(__file__), LAST_CARD_TIMESTAMP_FILE), "r",
+                  encoding="UTF8") as last_card_timestamp_file:
             last_check_timestamp = datetime.strptime(last_card_timestamp_file.read(), "%d.%m.%Y %H:%M")
             self.product_collector.mapped_products_after_timestamp(last_check_timestamp)
-            with open(os.path.join(os.path.dirname(__file__), LAST_CARD_TIMESTAMP_FILE), "w", encoding="UTF8") as last_card_timestamp_file:
-                last_card_timestamp_file.write(datetime.now().strftime("%d.%m.%Y %H:%M"))
-                last_card_timestamp_file.close()
+            last_card_timestamp_file.close()
+
+        with open(os.path.join(os.path.dirname(__file__), LAST_CARD_TIMESTAMP_FILE), "w",
+                  encoding="UTF8") as last_card_timestamp_file:
+            last_card_timestamp_file.write(check_timestamp.strftime("%d.%m.%Y %H:%M"))
             last_card_timestamp_file.close()
