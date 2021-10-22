@@ -90,8 +90,6 @@ class ProductCollector:
         return self.__list_of_products_by_filter_ordered_by_roi_asc(lambda x: x.time_relevant and x.mapped, False)
 
     def __send_message_to_discord(self, message):
-        message = message.replace(BackgroundColors.OKGREEN, "").replace(BackgroundColors.OKCYAN, "").replace(
-            BackgroundColors.OKBLUE, "").replace(BackgroundColors.ENDC, "")
         webhook = Webhook.from_url(self.webhook_latest_cards, adapter=RequestsWebhookAdapter())
         webhook.send(message)
 
