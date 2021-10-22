@@ -14,7 +14,6 @@ from src.product import Product
 NOT_MAPPED = "Not mapped"
 
 GECKODRIVER_PATH = "../resources/geckodriver-v0.27.0-win64/geckodriver.exe"
-LAST_CARD_FILE = "../resources/last_card.txt"
 LAST_CARD_TIMESTAMP_FILE = "../resources/last_card_timestamp.txt"
 
 
@@ -105,15 +104,17 @@ class PagePoller:
         links = self.driver.find_elements_by_css_selector(".fGZgWF")
         # fGZgWF = css for the element with the id attribute
         ids = self.driver.find_elements_by_css_selector(".eVfVKZ")
+        # fGZgWF = css for the element with the timestamp
+        timestamps = self.driver.find_elements_by_css_selector(".bOajya > p")
 
-        if len(elements) != len(price_elements) or len(elements) != len(links) or len(elements) != len(ids):
+        if len(elements) != len(price_elements) or len(elements) != len(links) or len(elements) != len(ids) or len(elements) != len(timestamps):
             print(BackgroundColors.WARNING + "Warning: There is a mismatch between element count, prices count, link count and id count." + BackgroundColors.ENDC)
         else:
             print(BackgroundColors.OKCYAN + "No mismatches found." + BackgroundColors.ENDC)
 
-        for element, price, link, id_element in zip(elements, price_elements, links, ids):
+        for element, price, link, id_element, timestamp in zip(elements, price_elements, links, ids, timestamps):
             products.append(
-                Product(element.text, price.text, link.get_attribute("href"), id_element.get_attribute("id")))
+                Product(element.text, price.text, link.get_attribute("href"), id_element.get_attribute("id"), timestamp.text))
 
     def calculate_card_performances(self):
         print("calculating card performances ...")
@@ -136,38 +137,22 @@ class PagePoller:
 
     def check_new_cards(self):
         products = self.products_mapped
+        new_products_timestamp = []
 
         with open(os.path.join(os.path.dirname(__file__), LAST_CARD_TIMESTAMP_FILE), "r", encoding="UTF8") as last_card_timestamp_file:
-            print(datetime.strptime(last_card_timestamp_file.read(), "%d.%m.%Y %H:%M:%S"))
+            last_check_timestamp = datetime.strptime(last_card_timestamp_file.read(), "%d.%m.%Y %H:%M")
+            print(last_check_timestamp)
+            for product in products:
+                print(product.timestamp)
+                if product.timestamp < last_check_timestamp:
+                    break
+                new_products_timestamp.append(product)
+            self.products_mapped = new_products_timestamp
+
             with open(os.path.join(os.path.dirname(__file__), LAST_CARD_TIMESTAMP_FILE), "w", encoding="UTF8") as last_card_timestamp_file:
-                last_card_timestamp_file.write(datetime.now().strftime("%d.%m.%Y %H:%M:%S"))
+                last_card_timestamp_file.write(datetime.now().strftime("%d.%m.%Y %H:%M"))
                 last_card_timestamp_file.close()
             last_card_timestamp_file.close()
-
-        with open(os.path.join(os.path.dirname(__file__), LAST_CARD_FILE), "r", encoding="UTF8") as last_card_file:
-            last_card = last_card_file.read()
-            new_products = []
-            last_card_file.close()
-
-            if len(products) == 0:
-                return
-
-            if last_card == products[0].id_number:
-                self.products_mapped = []
-                print("No new cards found.")
-                return
-
-            for product in products:
-                if product.id_number == last_card:
-                    break
-                new_products.append(product)
-
-            with open(os.path.join(os.path.dirname(__file__), LAST_CARD_FILE), "w", encoding="UTF8") as last_card_file:
-                last_card_file.write(new_products[0].id_number)
-                last_card_file.close()
-
-            # Only usw new products as mapped ones -> TODO update console log, because some were mapped, but not new
-            self.products_mapped = new_products
 
     def print_result_to_console(self):
         products = self.products

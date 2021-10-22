@@ -1,5 +1,6 @@
 from currency_translator import CurrencyTranslator
 from src.background_colors import BackgroundColors
+from timestamp_translator import TimestampTranslator
 
 
 class Product:
@@ -12,7 +13,7 @@ class Product:
     ----------
     name : str
         the name of the product
-    price : str
+    price_text : str
         the price of the product
     roi : float
         the return-of-investment property of the product
@@ -25,13 +26,14 @@ class Product:
         Sets return of investment and display string properties
     """
 
-    def __init__(self, name, price, link, id_number):
+    def __init__(self, name, price_text, link, id_number, timestamp_text):
         self.name = name
-        self.price = CurrencyTranslator.text_to_float(price)
+        self.price = CurrencyTranslator.text_to_float(price_text)
         self.roi = 0.00
         self.display_string = ""
         self.link = link
         self.id_number = id_number
+        self.timestamp = TimestampTranslator.text_to_timestamp_or_max_if_not_today(timestamp_text)
 
     def set_product_properties(self, card_name, profit_per_month):
         if self.price == '':

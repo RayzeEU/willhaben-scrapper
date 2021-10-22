@@ -53,4 +53,4 @@ while True:
 
     pagepoller.check_website()
 
-    time.sleep(30)
+    time.sleep(60)
