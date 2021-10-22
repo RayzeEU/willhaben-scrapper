@@ -1,6 +1,6 @@
-from currency_translator import CurrencyTranslator
+from translator.currency_translator import CurrencyTranslator
 from src.background_colors import BackgroundColors
-from timestamp_translator import TimestampTranslator
+from translator.timestamp_translator import TimestampTranslator
 
 
 class Product:

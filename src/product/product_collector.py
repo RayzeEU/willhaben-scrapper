@@ -3,7 +3,7 @@ from typing import List
 from discord import Webhook, RequestsWebhookAdapter
 
 from background_colors import BackgroundColors
-from product import Product
+from product.product import Product
 
 NOT_MAPPED = "Not mapped"
 
