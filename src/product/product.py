@@ -31,7 +31,7 @@ class Product:
                     self.name,
                     BackgroundColors.OKGREEN,
                     BackgroundColors.ENDC,
-                    self.name,
+                    self.short_name,
                     BackgroundColors.OKBLUE,
                     BackgroundColors.ENDC,
                     self.link)
@@ -47,7 +47,7 @@ class Product:
             .format(self.__price_formatted(),
                     self.__roi_formatted(),
                     self.name,
-                    self.name,
+                    self.short_name,
                     self.link)
 
     def mark_as_mapped(self):
