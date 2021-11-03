@@ -6,9 +6,9 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.firefox.options import Options
 from datetime import datetime
 
-from product.product_collector import ProductCollector
+from src.product.product_collector import ProductCollector
 from src.background_colors import BackgroundColors
-from product.product import Product
+from src.product.product import Product
 
 GECKODRIVER_PATH = "../resources/geckodriver-v0.27.0-win64/geckodriver.exe"
 LAST_CARD_TIMESTAMP_FILE = "../resources/last_card_timestamp.txt"
