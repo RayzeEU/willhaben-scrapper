@@ -29,6 +29,7 @@ class ProductCollector:
                 if usable_card["name"].lower() in product_name_lowercase:
                     product.set_product_properties(usable_card["name"], float(usable_card["monthly_income"]))
                     product.mark_as_mapped()
+                    break
         self.products.append(product)
 
     def mapped_products_after_timestamp(self, timestamp):
