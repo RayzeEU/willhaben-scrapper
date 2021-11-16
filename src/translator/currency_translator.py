@@ -6,6 +6,9 @@ class CurrencyTranslator:
 
         currency_text = currency_text.replace('€', '').replace(' ', '').replace(',', '.')
 
+        if currency_text == '':
+            return 0.0
+
         return float(currency_text)
 
     @staticmethod

@@ -86,14 +86,17 @@ class PagePoller:
                 break
 
     def scan_for_products_and_add_to(self):
-        # gERttF = css for the title
-        elements = self.driver.find_elements_by_css_selector('.gERttF')
-        # fwafsN = css for the price
-        price_elements = self.driver.find_elements_by_css_selector('.fwafsN')
-        # fGZgWF = css for the element with the link attribute
-        links = self.driver.find_elements_by_css_selector(".fGZgWF")
-        # fGZgWF = css for the element with the timestamp
-        timestamps = self.driver.find_elements_by_css_selector(".bOajya > p")
+        # kQBDHL = css for the title
+        elements = self.driver.find_elements_by_css_selector('.kQBDHL')
+        # gZusnz = css for the price
+        price_elements = self.driver.find_elements_by_css_selector('.gZusnz')
+        # kuIJvj = css for the element with the link attribute
+        links = self.driver.find_elements_by_css_selector(".kuIJvj")
+        # fkLbWQ = css for the element with the timestamp
+        timestamps = self.driver.find_elements_by_css_selector(".fkLbWQ")
+        timestampsTwo = self.driver.find_elements_by_css_selector(".fmdRuH")
+
+        timestamps = timestamps + timestampsTwo
 
         if len(elements) != len(price_elements) or len(elements) != len(links) or len(elements) != len(timestamps):
             print(BackgroundColors.WARNING + "Warning: There is a mismatch between the element data counters." + BackgroundColors.ENDC)
