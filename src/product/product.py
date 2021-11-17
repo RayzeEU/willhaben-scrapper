@@ -10,7 +10,7 @@ class Product:
         self.short_name = ""
         self.price = CurrencyTranslator.text_to_float(price_text)
         self.roi = 0.00
-        self.link = link
+        self.link = 'https://www.willhaben.at' + link
         self.timestamp = TimestampTranslator.text_to_timestamp_or_max_if_not_today(timestamp_text)
         self.mapped = False
         self.time_relevant = False

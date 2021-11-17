@@ -1,7 +1,6 @@
 import configparser
 import os
 import json
-import time
 import requests
 
 from src.poller import PagePoller
@@ -46,11 +45,4 @@ print("electricity daily: {0} €".format(round(price, 2)))
 
 print("daily after electricity: {0} €".format(round(dollar_per_day - price, 2)))
 
-pagepoller = PagePoller(False, True, True, private_config, config)
-
-while True:
-    webhook.send("Running...")
-
-    pagepoller.check_website()
-
-    time.sleep(60)
+PagePoller(True, True, private_config, config).check_website()
