@@ -2,6 +2,7 @@ import configparser
 import os
 import json
 import requests
+import time
 
 from src.poller import PagePoller
 from discord import Webhook, RequestsWebhookAdapter
@@ -45,4 +46,6 @@ print("electricity daily: {0} €".format(round(price, 2)))
 
 print("daily after electricity: {0} €".format(round(dollar_per_day - price, 2)))
 
-PagePoller(True, True, private_config, config).check_website()
+while True:
+    PagePoller(True, True, private_config, config).check_website()
+    time.sleep(30)
