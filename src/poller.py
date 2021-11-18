@@ -35,7 +35,8 @@ class PagePoller:
     def scan_for_products_and_add_to(self):
         print("opening page ...")
 
-        html = requests.get(self.config["url"]).text
+        # According to www.willhaben.at/robots.txt the following user agent has all rights.
+        html = requests.get(self.config["url"], headers={'User-Agent': 'Mediapartners-Google'}).text
 
         parsed_html = lxml.html.fromstring(html)
 
