@@ -71,11 +71,11 @@ class PagePoller:
 
         with open(os.path.join(os.path.dirname(__file__), LAST_CARD_TIMESTAMP_FILE), "r",
                   encoding="UTF8") as last_card_timestamp_file:
-            last_check_timestamp = datetime.strptime(last_card_timestamp_file.read(), "%d.%m.%Y %H:%M")
+            last_check_timestamp = datetime.strptime(last_card_timestamp_file.read(), "%d.%m.%Y %H:%M:%S")
             self.product_collector.mapped_products_after_timestamp(last_check_timestamp)
             last_card_timestamp_file.close()
 
         with open(os.path.join(os.path.dirname(__file__), LAST_CARD_TIMESTAMP_FILE), "w",
                   encoding="UTF8") as last_card_timestamp_file:
-            last_card_timestamp_file.write(check_timestamp.strftime("%d.%m.%Y %H:%M"))
+            last_card_timestamp_file.write(check_timestamp.strftime("%d.%m.%Y %H:%M:%S"))
             last_card_timestamp_file.close()
