@@ -17,9 +17,6 @@ class ProductCollector:
         self.blacklist = config["blacklist"]
         self.webhook_latest_cards = private_config.get('Webhooks', 'latest-cards')
 
-    def clear_collector(self):
-        self.products = []
-
     def add_new_product(self, product):
         product_name_lowercase = product.name.replace(' ', '').lower()
 
