@@ -96,9 +96,11 @@ class ProductCollector:
     def __send_message_to_discord(self, webhook, message):
         webhook = Webhook.from_url(webhook, adapter=RequestsWebhookAdapter())
         
-        if message != "Running":
+        if message == "Running":
             webhook.send(message)
         else:
+            if message == "":
+                message = "No cards found."
             webhook.edit_message(912333208106958918, message)
             
 
