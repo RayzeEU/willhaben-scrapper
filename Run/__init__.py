@@ -7,8 +7,6 @@ import requests
 import azure.functions as func
 
 from src.poller import PagePoller
-from discord import Webhook, RequestsWebhookAdapter
-
 
 def main(mytimer: func.TimerRequest) -> None:
     utc_timestamp = datetime.datetime.utcnow().replace(
@@ -17,11 +15,7 @@ def main(mytimer: func.TimerRequest) -> None:
     if mytimer.past_due:
         logging.info('The timer is past due!')
 
-    logging.info(os.environ["Discord_Bot_Status"])
     logging.info('Python timer trigger function ran at %s', utc_timestamp)
-
-    webhook = Webhook.from_url(os.environ["Discord_Bot_Status"], adapter=RequestsWebhookAdapter())
-    webhook.send("Test")
 
     logging.info("reading config ...")
     with open("resources/config.json") as config_json:
@@ -54,4 +48,4 @@ def main(mytimer: func.TimerRequest) -> None:
 
     logging.info("daily after electricity: {0} €".format(round(dollar_per_day - price, 2)))
 
-    PagePoller(True, False, os.environ["Discord_Latest_Cards"], config).check_website()
+    PagePoller(True, False, config).check_website()

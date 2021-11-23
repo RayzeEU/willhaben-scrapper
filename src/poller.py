@@ -14,15 +14,14 @@ LAST_CARD_TIMESTAMP_FILE = "../resources/last_card_timestamp.txt"
 
 class PagePoller:
 
-    def __init__(self, show_non_mapping, is_looping, private_config, config):
+    def __init__(self, show_non_mapping, is_looping, config):
         self.show_non_mapping = show_non_mapping
         self.is_looping = is_looping
-        self.private_config = private_config
         self.config = config
 
         logging.info("%s cards are usable" % len(self.config["usable_cards"]))
 
-        self.product_collector = ProductCollector(config, private_config)
+        self.product_collector = ProductCollector(config)
 
     def check_website(self):
         self.scan_for_products_and_add_to()
