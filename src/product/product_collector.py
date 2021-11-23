@@ -1,3 +1,4 @@
+from datetime import datetime
 import logging
 import os
 
@@ -80,12 +81,12 @@ class ProductCollector:
         
 
     def __build_discord_message(self):
-        message = ""
+        message = datetime.strftime('Last update: %d. %b %H:%M')
         for product in self.__list_of_mapped_products_order_by_roi_asc():
             message = self.__add_line_break_if_message_not_empty(message)
 
             message = message + product.display_string_uncolored()
-            if len(message) > 1900:
+            if len(message) > 1999:
                 break
 
         return message
@@ -99,8 +100,6 @@ class ProductCollector:
         if message == "Running":
             webhook.send(message)
         else:
-            if message == "":
-                message = "No cards found."
             webhook.edit_message(912333208106958918, content=message)
             
 
