@@ -1,4 +1,5 @@
 import logging
+import os
 
 from typing import List
 
@@ -12,12 +13,13 @@ NOT_MAPPED = "Not mapped"
 
 class ProductCollector:
 
-    def __init__(self, config, private_config):
+    def __init__(self, config):
         self.products = []
         self.usable_cards = config["usable_cards"]
         self.blacklist_words = config["blacklist_words"]
         self.blacklist = config["blacklist"]
-        self.webhook_latest_cards = private_config
+        self.webhook_latest_cards = os.environ["Discord_Latest_Cards"]
+        self.webhook_bot_status = os.environ["Discord_Bot_Status"]
 
     def add_new_product(self, product):
         product_name_lowercase = product.name.replace(' ', '').lower()
@@ -73,7 +75,9 @@ class ProductCollector:
     def print_result_to_discord(self):
         message = self.__build_discord_message()
         if message != "":
-            self.__send_message_to_discord(message)
+            self.__send_message_to_discord(self.webhook_latest_cards, message)
+        self.__send_message_to_discord(self.webhook_bot_status, "Running")
+        
 
     def __build_discord_message(self):
         message = ""
@@ -89,8 +93,8 @@ class ProductCollector:
     def __list_of_relevant_products_order_by_roi_desc(self) -> List[Product]:
         return self.__list_of_products_by_filter_ordered_by_roi_asc(lambda x: x.time_relevant and x.mapped, False)
 
-    def __send_message_to_discord(self, message):
-        webhook = Webhook.from_url(self.webhook_latest_cards, adapter=RequestsWebhookAdapter())
+    def __send_message_to_discord(self, webhook, message):
+        webhook = Webhook.from_url(webhook, adapter=RequestsWebhookAdapter())
         webhook.send(message)
 
     @staticmethod
