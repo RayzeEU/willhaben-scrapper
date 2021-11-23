@@ -81,7 +81,7 @@ class ProductCollector:
 
     def __build_discord_message(self):
         message = ""
-        for product in self.__list_of_relevant_products_order_by_roi_desc():
+        for product in self.__list_of_mapped_products_order_by_roi_asc():
             message = self.__add_line_break_if_message_not_empty(message)
 
             message = message + product.display_string_uncolored()
