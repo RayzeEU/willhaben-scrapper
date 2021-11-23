@@ -29,8 +29,8 @@ class PagePoller:
         if self.is_looping:
             self.check_new_cards()
 
-        self.product_collector.logging.info_result_to_console(self.show_non_mapping)
-        self.product_collector.logging.info_result_to_discord()
+        self.product_collector.print_result_to_console(self.show_non_mapping)
+        self.product_collector.print_result_to_discord()
 
     def scan_for_products_and_add_to(self):
         logging.info("opening page ...")
