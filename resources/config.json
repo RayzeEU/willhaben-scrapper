@@ -1,0 +1,123 @@
+{
+  "url": "https://www.willhaben.at/iad/kaufen-und-verkaufen/marktplatz/pc-komponenten/grafikkarten-5882?sfId=053f5386-2e2b-4c08-a0d7-7434e421b42e&isNavigation=true&page=1&rows=25&PRICE_FROM=100&PRICE_TO=900",
+  "blacklist": [
+    "MSI RTX 3090 Ventus 3X - Corsair XG7 Wasserkühler inkl. Backplate *neuwertig*",
+    "Asus Rog Strix RTX 3090/3080/3080TI EKWB Waterblock",
+    "Sammlerwert Grafikkarte 32MB - Ungeöffnet - 3D Prophet 4000XT",
+    "nvidia tesla M2070q gpu 6gb grafikkarte",
+    "Grafikkarte 6600",
+    "ASUS dual - gtx1060  o3g",
+    "Sapphire Rx 480 4gb",
+    "MSI Radeon RX480 4GB Twin Frozr"
+  ],
+  "blacklist_words": [
+    "defekt",
+    "kaputt",
+    "lhr",
+    "tausch"
+  ],
+  "usable_cards": [
+    {
+      "name": "HX90",
+      "monthly_income": 139.9,
+      "watt": 250,
+      "hash_power": 98
+    },
+    {
+      "name": "3090",
+      "monthly_income": 172.98,
+      "watt": 285,
+      "hash_power": 120
+    },
+    {
+      "name": "3080TI",
+      "monthly_income": 91.81,
+      "watt": 240,
+      "hash_power": 68
+    },
+    {
+      "name": "3080",
+      "monthly_income": 142.28,
+      "watt": 220,
+      "hash_power": 98
+    },
+    {
+      "name": "3070TI",
+      "monthly_income": 61.45,
+      "watt": 150,
+      "hash_power": 45
+    },
+    {
+      "name": "3070",
+      "monthly_income": 87.48,
+      "watt": 130,
+      "hash_power": 60
+    },
+    {
+      "name": "3060TI",
+      "monthly_income": 87.48,
+      "watt": 130,
+      "hash_power": 60
+    },
+    {
+      "name": "3060",
+      "monthly_income": 67.88,
+      "watt": 110,
+      "hash_power": 47
+    },
+    {
+      "name": "2080TI",
+      "monthly_income": 81.01,
+      "watt": 150,
+      "hash_power": 57
+    },
+    {
+      "name": "2080SUPER",
+      "monthly_income": 54.58,
+      "watt": 175,
+      "hash_power": 42
+    },
+    {
+      "name": "2080",
+      "monthly_income": 56.17,
+      "watt": 155,
+      "hash_power": 42
+    },
+    {
+      "name": "2070SUPER",
+      "monthly_income": 53.3,
+      "watt": 150,
+      "hash_power": 40
+    },
+    {
+      "name": "2070",
+      "monthly_income": 53.66,
+      "watt": 125,
+      "hash_power": 39
+    },
+    {
+      "name": "2060SUPER",
+      "monthly_income": 53.66,
+      "watt": 125,
+      "hash_power": 39
+    },
+    {
+      "name": "1660TI",
+      "monthly_income": 43.34,
+      "watt": 70,
+      "hash_power": 30
+    },
+    {
+      "name": "1660SUPER",
+      "monthly_income": 43.34,
+      "watt": 70,
+      "hash_power": 30
+    },
+    {
+      "name": "1660",
+      "monthly_income": 34.36,
+      "watt": 60,
+      "hash_power": 24
+    }
+  ]
+}
