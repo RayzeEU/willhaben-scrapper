@@ -7,7 +7,8 @@ class TimestampTranslator:
         if "Heute" in timestamp_text:
             return TimestampTranslator.__convert_text_to_timestamp_for_today(timestamp_text)
         else:
-            return datetime.max
+            timestamp_text = timestamp_text + str(datetime.today().year)
+            return datetime.strptime(timestamp_text.replace(" Uhr", ""), "%d.%m. - %H:%M%Y")
 
     @staticmethod
     def __convert_text_to_timestamp_for_today(timestamp_text):
