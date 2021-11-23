@@ -35,8 +35,8 @@ class ProductCollector:
 
     def mapped_products_after_timestamp(self, timestamp):
         for product in self.products:
-            if product.timestamp < timestamp:
-                break
+            # if product.timestamp < timestamp:
+            #     break
             product.mark_as_time_relevant()
 
     def products_size(self):
@@ -74,8 +74,8 @@ class ProductCollector:
 
     def print_result_to_discord(self):
         message = self.__build_discord_message()
-        if message != "":
-            self.__send_message_to_discord(self.webhook_latest_cards, message)
+    
+        self.__send_message_to_discord(self.webhook_latest_cards, message)
         self.__send_message_to_discord(self.webhook_bot_status, "Running")
         
 
@@ -95,7 +95,12 @@ class ProductCollector:
 
     def __send_message_to_discord(self, webhook, message):
         webhook = Webhook.from_url(webhook, adapter=RequestsWebhookAdapter())
-        webhook.send(message)
+        
+        if message != "Running":
+            webhook.send(message)
+        else:
+            webhook.edit_message(912333208106958918, message)
+            
 
     @staticmethod
     def __add_line_break_if_message_not_empty(message):
