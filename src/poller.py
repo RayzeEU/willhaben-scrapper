@@ -1,4 +1,5 @@
 import os
+import logging
 import lxml.html
 import requests
 
@@ -19,7 +20,7 @@ class PagePoller:
         self.private_config = private_config
         self.config = config
 
-        print("%s cards are usable" % len(self.config["usable_cards"]))
+        logging.info("%s cards are usable" % len(self.config["usable_cards"]))
 
         self.product_collector = ProductCollector(config, private_config)
 
@@ -29,11 +30,11 @@ class PagePoller:
         if self.is_looping:
             self.check_new_cards()
 
-        self.product_collector.print_result_to_console(self.show_non_mapping)
-        self.product_collector.print_result_to_discord()
+        self.product_collector.logging.info_result_to_console(self.show_non_mapping)
+        self.product_collector.logging.info_result_to_discord()
 
     def scan_for_products_and_add_to(self):
-        print("opening page ...")
+        logging.info("opening page ...")
 
         # According to www.willhaben.at/robots.txt the following user agent has all rights.
         html = requests.get(self.config["url"], headers={'User-Agent': 'Mediapartners-Google'}).text

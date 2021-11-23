@@ -1,3 +1,5 @@
+import logging
+
 from typing import List
 
 from discord import Webhook, RequestsWebhookAdapter
@@ -39,7 +41,7 @@ class ProductCollector:
         return len(self.products)
 
     def print_result_to_console(self, show_non_mapping):
-        print(BackgroundColors.OKCYAN + "Total products found: %s" % self.products_size() + BackgroundColors.ENDC)
+        logging.info(BackgroundColors.OKCYAN + "Total products found: %s" % self.products_size() + BackgroundColors.ENDC)
 
         if show_non_mapping:
             self.__print_non_mapped_products()
@@ -47,9 +49,9 @@ class ProductCollector:
 
     def __print_non_mapped_products(self):
         products_not_mapped = self.__list_of_not_mapped_products_order_by_roi_asc()
-        print(BackgroundColors.WARNING + "Total products not matched: %s" % len(products_not_mapped) + BackgroundColors.ENDC)
+        logging.info(BackgroundColors.WARNING + "Total products not matched: %s" % len(products_not_mapped) + BackgroundColors.ENDC)
         for product in products_not_mapped:
-            print(product.display_string_colored())
+            logging.info(product.display_string_colored())
 
     def __list_of_not_mapped_products_order_by_roi_asc(self) -> List[Product]:
         return self.__list_of_products_by_filter_ordered_by_roi_asc(lambda x: not x.mapped, True)
@@ -61,9 +63,9 @@ class ProductCollector:
 
     def __print_mapped_products(self):
         products_mapped = self.__list_of_mapped_products_order_by_roi_asc()
-        print(BackgroundColors.OKCYAN + "Total products mapped: %s" % len(products_mapped) + BackgroundColors.ENDC)
+        logging.info(BackgroundColors.OKCYAN + "Total products mapped: %s" % len(products_mapped) + BackgroundColors.ENDC)
         for product in products_mapped:
-            print(product.display_string_colored())
+            logging.info(product.display_string_colored())
 
     def __list_of_mapped_products_order_by_roi_asc(self) -> List[Product]:
         return self.__list_of_products_by_filter_ordered_by_roi_asc(lambda x: x.mapped, True)
