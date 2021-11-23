@@ -101,7 +101,7 @@ class ProductCollector:
         else:
             if message == "":
                 message = "No cards found."
-            webhook.edit_message(912333208106958918, message)
+            webhook.edit_message(912333208106958918, content=message)
             
 
     @staticmethod
