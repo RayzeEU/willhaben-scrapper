@@ -65,6 +65,6 @@ jobs:
           app-name: 'wh-scrapper'
           slot-name: 'Development'
           package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
-          publish-profile: ${{ secrets.AzureAppService_PublishProfile_f73ef35671ca414186576fe5d08c14c1 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_A9864FC565674D51AB5D570096A4BEFA }}
           scm-do-build-during-deployment: true
           enable-oryx-build: true
