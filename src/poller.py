@@ -1,22 +1,17 @@
-import os
 import logging
 import lxml.html
 import requests
 
 from datetime import datetime
-
+from datetime import timedelta
 from src.product.product_collector import ProductCollector
 from src.product.product import Product
-
-GECKODRIVER_PATH = "../resources/geckodriver-v0.27.0-win64/geckodriver.exe"
-LAST_CARD_TIMESTAMP_FILE = "../resources/last_card_timestamp.txt"
 
 
 class PagePoller:
 
-    def __init__(self, show_non_mapping, is_looping, config):
+    def __init__(self, show_non_mapping, config):
         self.show_non_mapping = show_non_mapping
-        self.is_looping = is_looping
         self.config = config
 
         logging.info("%s cards are usable" % len(self.config["usable_cards"]))
@@ -26,11 +21,10 @@ class PagePoller:
     def check_website(self):
         self.scan_for_products_and_add_to()
 
-        if self.is_looping:
-            self.check_new_cards()
+        self.check_new_cards()
 
         self.product_collector.print_result_to_console(self.show_non_mapping)
-        self.product_collector.print_result_to_discord()
+        self.product_collector.send_result_to_discord()
 
     def scan_for_products_and_add_to(self):
         logging.info("opening page ...")
@@ -68,14 +62,5 @@ class PagePoller:
 
     def check_new_cards(self):
         check_timestamp = datetime.now()
-
-        with open(os.path.join(os.path.dirname(__file__), LAST_CARD_TIMESTAMP_FILE), "r",
-                  encoding="UTF8") as last_card_timestamp_file:
-            last_check_timestamp = datetime.strptime(last_card_timestamp_file.read(), "%d.%m.%Y %H:%M:%S")
-            self.product_collector.mapped_products_after_timestamp(last_check_timestamp)
-            last_card_timestamp_file.close()
-
-        with open(os.path.join(os.path.dirname(__file__), LAST_CARD_TIMESTAMP_FILE), "w",
-                  encoding="UTF8") as last_card_timestamp_file:
-            last_card_timestamp_file.write(check_timestamp.strftime("%d.%m.%Y %H:%M:%S"))
-            last_card_timestamp_file.close()
+        minus_five_minutes = timedelta(minutes=5)
+        self.product_collector.mapped_products_after_timestamp(check_timestamp - minus_five_minutes)

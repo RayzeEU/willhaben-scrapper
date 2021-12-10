@@ -20,4 +20,4 @@ def main(mytimer: func.TimerRequest) -> None:
     with open("resources/config.json") as config_json:
         config = json.load(config_json)
 
-    PagePoller(True, False, config).check_website()
+    PagePoller(True, config).check_website()

@@ -1,4 +1,3 @@
-from datetime import datetime
 import logging
 import os
 
@@ -36,9 +35,8 @@ class ProductCollector:
 
     def mapped_products_after_timestamp(self, timestamp):
         for product in self.products:
-            # if product.timestamp < timestamp:
-            #     break
-            product.mark_as_time_relevant()
+            if product.timestamp >= timestamp:
+                product.mark_as_time_relevant()
 
     def products_size(self):
         return len(self.products)
@@ -57,11 +55,11 @@ class ProductCollector:
             logging.info(product.display_string_colored())
 
     def __list_of_not_mapped_products_order_by_roi_asc(self) -> List[Product]:
-        return self.__list_of_products_by_filter_ordered_by_roi_asc(lambda x: not x.mapped, True)
+        return self.__list_of_products_by_filter_ordered_by_roi_asc(lambda x: not x.mapped)
 
-    def __list_of_products_by_filter_ordered_by_roi_asc(self, lambda_function, asc):
+    def __list_of_products_by_filter_ordered_by_roi_asc(self, lambda_function):
         filtered_list = list(filter(lambda_function, self.products))
-        filtered_list.sort(key=lambda p: p.roi, reverse=asc)
+        filtered_list.sort(key=lambda p: p.roi, reverse=True)
         return filtered_list
 
     def __print_mapped_products(self):
@@ -71,18 +69,18 @@ class ProductCollector:
             logging.info(product.display_string_colored())
 
     def __list_of_mapped_products_order_by_roi_asc(self) -> List[Product]:
-        return self.__list_of_products_by_filter_ordered_by_roi_asc(lambda x: x.mapped, True)
+        return self.__list_of_products_by_filter_ordered_by_roi_asc(lambda x: x.mapped)
 
-    def print_result_to_discord(self):
+    def send_result_to_discord(self):
         message = self.__build_discord_message()
-    
-        self.__send_message_to_discord(self.webhook_latest_cards, message)
+
         self.__send_message_to_discord(self.webhook_bot_status, "Running")
-        
+        if message:
+            self.__send_message_to_discord(self.webhook_latest_cards, message)
 
     def __build_discord_message(self):
-        message = datetime.today().strftime('Last update: %d. %b %H:%M')
-        for product in self.__list_of_mapped_products_order_by_roi_asc():
+        message = ""
+        for product in self.__list_of_relevant_products_order_by_roi_asc():
             message = self.__add_line_break_if_message_not_empty(message)
 
             message = message + product.display_string_uncolored()
@@ -91,17 +89,13 @@ class ProductCollector:
 
         return message
 
-    def __list_of_relevant_products_order_by_roi_desc(self) -> List[Product]:
-        return self.__list_of_products_by_filter_ordered_by_roi_asc(lambda x: x.time_relevant and x.mapped, False)
+    def __list_of_relevant_products_order_by_roi_asc(self) -> List[Product]:
+        return self.__list_of_products_by_filter_ordered_by_roi_asc(lambda x: x.time_relevant and x.mapped)
 
-    def __send_message_to_discord(self, webhook, message):
+    @staticmethod
+    def __send_message_to_discord(webhook, message):
         webhook = Webhook.from_url(webhook, adapter=RequestsWebhookAdapter())
-        
-        if message == "Running":
-            webhook.send(message)
-        else:
-            webhook.edit_message(912333208106958918, content=message)
-            
+        webhook.send(message)
 
     @staticmethod
     def __add_line_break_if_message_not_empty(message):
