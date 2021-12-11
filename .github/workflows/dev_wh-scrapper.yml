@@ -40,7 +40,7 @@ jobs:
         run:  |
           pip install pytest
           pip install pytest-cov
-          pytest --doctest-modules --junitxml=junit/test-results.xml --cov=willhaben-scrapper --cov-report=xml --cov-report=html test/
+          pytest --doctest-modules --junitxml=junit/test-results.xml --cov=willhaben-scrapper --cov-report=xml --cov-report=html tests/
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
