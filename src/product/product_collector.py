@@ -74,7 +74,7 @@ class ProductCollector:
     def send_result_to_discord(self):
         message = self.__build_discord_message()
 
-        self.__send_message_to_discord(self.webhook_bot_status, "Running Test")
+        self.__send_message_to_discord(self.webhook_bot_status, "Running")
         if message:
             self.__send_message_to_discord(self.webhook_latest_cards, message)
 
