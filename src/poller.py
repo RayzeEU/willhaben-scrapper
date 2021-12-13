@@ -68,8 +68,9 @@ class PagePoller:
     def check_new_cards(self):
         check_timestamp = datetime.now()
         minus_five_minutes = timedelta(minutes=5)
+        plus_one_hour = timedelta(hours=1)
 
         webhook = Webhook.from_url(os.environ["Discord_Bot_Status"], adapter=RequestsWebhookAdapter())
-        webhook.send(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        webhook.send((datetime.now() - minus_five_minutes + plus_one_hour).strftime("%Y-%m-%d %H:%M:%S"))
 
-        self.product_collector.mapped_products_after_timestamp(check_timestamp - minus_five_minutes)
+        self.product_collector.mapped_products_after_timestamp(check_timestamp - minus_five_minutes + plus_one_hour)
