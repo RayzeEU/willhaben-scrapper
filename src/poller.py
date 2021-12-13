@@ -1,9 +1,14 @@
 import logging
+import os
+
 import lxml.html
 import requests
 
 from datetime import datetime
 from datetime import timedelta
+
+from discord import Webhook, RequestsWebhookAdapter
+
 from src.product.product_collector import ProductCollector
 from src.product.product import Product
 
@@ -63,4 +68,8 @@ class PagePoller:
     def check_new_cards(self):
         check_timestamp = datetime.now()
         minus_five_minutes = timedelta(minutes=5)
+
+        webhook = Webhook.from_url(os.environ["Discord_Bot_Status"], adapter=RequestsWebhookAdapter())
+        webhook.send(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+
         self.product_collector.mapped_products_after_timestamp(check_timestamp - minus_five_minutes)
