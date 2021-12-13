@@ -70,7 +70,10 @@ class PagePoller:
         minus_five_minutes = timedelta(minutes=5)
         plus_one_hour = timedelta(hours=1)
 
-        webhook = Webhook.from_url(os.environ["Discord_Bot_Status"], adapter=RequestsWebhookAdapter())
-        webhook.send((datetime.now() - minus_five_minutes + plus_one_hour).strftime("%Y-%m-%d %H:%M:%S"))
+        timestamp_to_check = check_timestamp - minus_five_minutes + plus_one_hour
 
-        self.product_collector.mapped_products_after_timestamp(check_timestamp - minus_five_minutes + plus_one_hour)
+        webhook = Webhook.from_url(os.environ["Discord_Bot_Status"], adapter=RequestsWebhookAdapter())
+        webhook.send(timestamp_to_check.strftime("%c"))
+        webhook.send(timestamp_to_check.strftime("%Y-%m-%d %H:%M:%S %z %Z"))
+
+        self.product_collector.mapped_products_after_timestamp(timestamp_to_check)
