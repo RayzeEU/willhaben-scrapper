@@ -1,19 +1,13 @@
 class CurrencyTranslator:
     @staticmethod
-    def text_to_float(currency_text):
-        if not isinstance(currency_text, str):
-            return 0.0
+    def text_to_int(amount_text: str) -> int:
+        amount_text = amount_text.replace('€', '').replace('.', '').replace(' ', '')
 
-        currency_text = currency_text.replace('€', '').replace(' ', '').replace(',', '.')
+        if amount_text == '':
+            return 0
 
-        if currency_text == '':
-            return 0.0
-
-        return float(currency_text)
+        return int(amount_text)
 
     @staticmethod
-    def float_to_text(currency_float):
-        if not isinstance(currency_float, float):
-            return ""
-
-        return "{0}€".format(str(round(float(currency_float), 2)))
+    def int_to_text(amount: int) -> str:
+        return "{0} €".format(amount)

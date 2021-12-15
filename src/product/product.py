@@ -8,7 +8,7 @@ class Product:
     def __init__(self, name, price_text, link, timestamp_text):
         self.name = name
         self.short_name = ""
-        self.price = CurrencyTranslator.text_to_float(price_text)
+        self.price = CurrencyTranslator.text_to_int(price_text)
         self.roi = 0.00
         self.link = 'https://www.willhaben.at' + link
         self.timestamp = TimestampTranslator.text_to_timestamp_or_max_if_not_today(timestamp_text)
@@ -37,7 +37,7 @@ class Product:
                     self.link)
 
     def __price_formatted(self):
-        return CurrencyTranslator.float_to_text(self.price)
+        return CurrencyTranslator.int_to_text(self.price)
 
     def __roi_formatted(self):
         return '{0:.2f}'.format(self.roi)
