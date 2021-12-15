@@ -44,7 +44,7 @@ jobs:
         id: pytester-cov
         uses: alexanderdamiani/pytester-cov@v1.2.1
         with:
-          pytest-root-dir: '.'
+          pytest-root-dir: 'src'
           cov-omit-list: 'test/*'
           cov-threshold-single: ${{ env.COVERAGE_SINGLE }}
           cov-threshold-total: ${{ env.COVERAGE_TOTAL }}
