@@ -17,6 +17,10 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      COVERAGE_SINGLE: 60
+      COVERAGE_TOTAL: 60
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -35,13 +39,21 @@ jobs:
         run:  |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-        
-      - name: Run tests with pytest
-        run:  |
-          pip install pytest
-          pip install pytest-cov
-          pytest --doctest-modules --junitxml=junit/test-results.xml --cov=src --cov-report=xml --cov-report=html --cov-report=term tests/
 
+      - name: Run Tests with code coverage
+        id: pytester-cov
+        uses: alexanderdamiani/pytester-cov@v1.2.1
+        with:
+          pytest-root-dir: '.'
+          cov-omit-list: 'test/*'
+          cov-threshold-single: ${{ env.COVERAGE_SINGLE }}
+          cov-threshold-total: ${{ env.COVERAGE_TOTAL }}
+
+      - name: Commit pytest coverage table
+        uses: peter-evans/commit-comment@v1
+        with:
+          body: ${{ steps.pytester-cov.outputs.output-table }}
+        
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
