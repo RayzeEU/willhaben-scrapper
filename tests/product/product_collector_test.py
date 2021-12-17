@@ -95,6 +95,16 @@ def test_given_two_cards__when_products_size__then_2():
     assert product_collector.products_size() == 2
 
 
+def test_given_two_cards__when_print_result_to_console__then_right_console_output():
+    product_collector = __test_product_collector()
+    product_collector.add_new_product(__test_product("1660"))
+    product_collector.add_new_product(__test_product("1660"))
+
+    product_collector.print_result_to_console(True)
+    # TODO Verify console output -> not that important for now as it is only used for local testing.
+    #  Should not throw an error for now.
+
+
 def __test_product(name: str) -> Product:
     return Product(name, "100", "/Link", "16.12. - 20:37 Uhr")
 
