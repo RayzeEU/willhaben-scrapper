@@ -5,7 +5,7 @@ from src.translator.timestamp_translator import TimestampTranslator
 
 class Product:
 
-    def __init__(self, name, price_text, link, timestamp_text):
+    def __init__(self, name: str, price_text: str, link: str, timestamp_text: str):
         self.name = name
         self.short_name = ""
         self.price = CurrencyTranslator.text_to_int(price_text)
@@ -15,10 +15,7 @@ class Product:
         self.mapped = False
         self.time_relevant = False
 
-    def set_product_properties(self, card_name, profit_per_month):
-        if self.price == '':
-            return
-
+    def set_product_properties(self, card_name: str, profit_per_month: float):
         self.short_name = card_name
 
         return_of_investment = float(self.price) / profit_per_month
@@ -55,3 +52,6 @@ class Product:
 
     def mark_as_time_relevant(self):
         self.time_relevant = True
+
+    def name_lowercase(self) -> str:
+        return self.name.replace(' ', '').lower()

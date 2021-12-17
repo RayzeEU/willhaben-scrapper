@@ -22,12 +22,10 @@ class ProductCollector:
         self.webhook_bot_status = os.environ["Discord_Bot_Status"]
 
     def add_new_product(self, product):
-        product_name_lowercase = product.name.replace(' ', '').lower()
-
         if product.name not in self.blacklist_words \
                 and product.name not in self.blacklist:
             for usable_card in self.usable_cards:
-                if usable_card["name"].lower() in product_name_lowercase:
+                if usable_card["name"].lower() in product.name_lowercase():
                     product.set_product_properties(usable_card["name"], float(usable_card["monthly_income"]))
                     product.mark_as_mapped()
                     break
