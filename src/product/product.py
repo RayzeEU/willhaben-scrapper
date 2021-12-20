@@ -6,7 +6,7 @@ from src.translator.timestamp_translator import TimestampTranslator
 class Product:
 
     def __init__(self, name: str, price_text: str, link: str, timestamp_text: str):
-        self.name = name
+        self._name = name
         self.short_name = ""
         self.price = CurrencyTranslator.text_to_int(price_text)
         self.roi = 0.00
@@ -25,7 +25,7 @@ class Product:
         return "{6}\'{5}\' - {0}{7} - ROI: {3}{1}{4} (Full Name: {2} -> {8})" \
             .format(self.__price_formatted(),
                     self.__roi_formatted(),
-                    self.name,
+                    self._name,
                     BackgroundColors.OKGREEN,
                     BackgroundColors.ENDC,
                     self.short_name,
@@ -43,7 +43,7 @@ class Product:
         return "\'{3}\' - {0} - ROI: {1} (Full Name: {2} -> {4})" \
             .format(self.__price_formatted(),
                     self.__roi_formatted(),
-                    self.name,
+                    self._name,
                     self.short_name,
                     self.link)
 
@@ -54,4 +54,8 @@ class Product:
         self.time_relevant = True
 
     def name_lowercase(self) -> str:
-        return self.name.replace(' ', '').lower()
+        return self._name.replace(' ', '').lower()
+
+    def is_blacklisted(self, blacklist_words, blacklist) -> bool:
+        return any(word in self._name for word in blacklist_words) \
+               or self._name in blacklist

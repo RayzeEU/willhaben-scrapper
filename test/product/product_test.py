@@ -7,7 +7,7 @@ from src.translator.timestamp_translator import TimestampTranslator
 def test__given_values__when_constructor__then_instance_with_values():
     product = __test_product()
 
-    assert product.name == "Name"
+    assert product._name == "Name"
     assert product.short_name == ""
     assert product.price == CurrencyTranslator.text_to_int("199")
     assert product.roi == 0
@@ -37,7 +37,7 @@ def __expected_display_string_colored(product: Product) -> str:
     return "{6}\'{5}\' - {0}{7} - ROI: {3}{1}{4} (Full Name: {2} -> {8})" \
         .format(__expected_price_formatted(product.price),
                 __expected_roi_formatted(product.roi),
-                product.name,
+                "Name",
                 BackgroundColors.OKGREEN,
                 BackgroundColors.ENDC,
                 product.short_name,
@@ -65,7 +65,7 @@ def __expected_display_string_uncolored(product: Product) -> str:
     return "\'{3}\' - {0} - ROI: {1} (Full Name: {2} -> {4})" \
         .format(__expected_price_formatted(product.price),
                 __expected_roi_formatted(product.roi),
-                product.name,
+                "Name",
                 product.short_name,
                 product.link)
 
@@ -88,8 +88,54 @@ def test__given_product__when_name_lowercase__then_name_as_lowercase():
     product = __test_product()
     name_lowercase = product.name_lowercase()
 
-    assert name_lowercase == product.name.replace(" ", "").lower()
+    assert name_lowercase == product._name.replace(" ", "").lower()
 
 
 def __test_product() -> Product:
     return Product("Name", "199", "/Link", "16.12. - 20:37 Uhr")
+
+
+def test__given_product_on_blacklist_words__when_is_blacklisted__then_true():
+    product = __test_product()
+
+    blacklist_words = [
+        "Name",
+        "kaputt",
+        "tausch"
+    ]
+
+    assert product.is_blacklisted(blacklist_words, []) is True
+
+
+def test__given_product_not_on_blacklist_words__when_is_blacklisted__then_false():
+    product = __test_product()
+
+    blacklist_words = [
+        "kaputt",
+        "tausch"
+    ]
+
+    assert product.is_blacklisted(blacklist_words, []) is False
+
+
+def test__given_product_on_blacklist__when_is_blacklisted__then_true():
+    product = __test_product()
+
+    blacklist = [
+        "Name",
+        "kaputt",
+        "tausch"
+    ]
+
+    assert product.is_blacklisted([], blacklist) is True
+
+
+def test__given_product_not_on_blacklist__when_is_blacklisted__then_false():
+    product = __test_product()
+
+    blacklist = [
+        "kaputt",
+        "tausch"
+    ]
+
+    assert product.is_blacklisted([], blacklist) is False
