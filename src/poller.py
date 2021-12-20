@@ -21,14 +21,14 @@ class PagePoller:
         self.product_collector = ProductCollector(config)
 
     def check_website(self):
-        self.scan_for_products_and_add_to()
+        self.__scan_for_products_and_add_to()
 
-        self.check_new_cards()
+        self.__check_new_cards()
 
         self.product_collector.print_result_to_console(self.show_non_mapping)
         self.product_collector.send_result_to_discord()
 
-    def scan_for_products_and_add_to(self):
+    def __scan_for_products_and_add_to(self):
         logging.info("opening page ...")
 
         # According to www.willhaben.at/robots.txt the following user agent has all rights.
@@ -62,7 +62,7 @@ class PagePoller:
                 self.product_collector.add_new_product(
                     Product(card_name, card_price, card_href, card_timestamp))
 
-    def check_new_cards(self):
+    def __check_new_cards(self):
         check_timestamp = datetime.now()
         minus_five_minutes = timedelta(minutes=5)
         plus_one_hour = timedelta(hours=1)

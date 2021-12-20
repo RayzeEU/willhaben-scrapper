@@ -1,4 +1,5 @@
 resources/private_config.json
+.pycrunch-config.yaml
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -178,6 +179,7 @@ __azurite_db*__.json
 .idea/compiler.xml
 .idea/jarRepositories.xml
 .idea/modules.xml
+.idea/pycrunch-vars-window-jetbrains.xml
 .idea/*.iml
 .idea/modules
 *.iml
