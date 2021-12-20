@@ -26,7 +26,7 @@ def test__given_card_name_and_profit_per_month__when_set_product_properties__the
     assert product.roi == (float(product.price) / 20)
 
 
-def test_given_product__when_display_string_colored__then_string_with_values_from_product():
+def test__given_product__when_display_string_colored__then_string_with_values_from_product():
     product = __test_product()
     colored = product.display_string_colored()
 
@@ -54,7 +54,7 @@ def __expected_roi_formatted(roi) -> str:
     return '{0:.2f}'.format(roi)
 
 
-def test_given_product__when_display_string_uncolored__then_string_with_values_from_product():
+def test__given_product__when_display_string_uncolored__then_string_with_values_from_product():
     product = __test_product()
     uncolored = product.display_string_uncolored()
 
@@ -70,21 +70,21 @@ def __expected_display_string_uncolored(product: Product) -> str:
                 product.link)
 
 
-def test_given_product_not_mapped__when_mark_as_mapped__then_product_is_marked_as_mapped():
+def test__given_product_not_mapped__when_mark_as_mapped__then_product_is_marked_as_mapped():
     product = __test_product()
     product.mark_as_mapped()
 
     assert product.mapped is True
 
 
-def test_given_product_not_time_relevant__when_mark_as_time_relevant__then_product_is_marked_as_time_relevant():
+def test__given_product_not_time_relevant__when_mark_as_time_relevant__then_product_is_marked_as_time_relevant():
     product = __test_product()
     product.mark_as_time_relevant()
 
     assert product.time_relevant is True
 
 
-def test_given_product__when_name_lowercase__then_name_as_lowercase():
+def test__given_product__when_name_lowercase__then_name_as_lowercase():
     product = __test_product()
     name_lowercase = product.name_lowercase()
 

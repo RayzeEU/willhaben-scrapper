@@ -10,6 +10,7 @@ _config = {
     'usable_cards': [{'name': 'HX90', 'monthly_income': 139.9, 'watt': 250, 'hash_power': 98},
                      {'name': '1660', 'monthly_income': 34.36, 'watt': 60, 'hash_power': 24}]}
 
+
 def test__given_config__when_constructor__then_instance_with_right_values():
     product_collector = __test_product_collector()
 
@@ -21,7 +22,7 @@ def test__given_config__when_constructor__then_instance_with_right_values():
     assert product_collector.webhook_bot_status == "Webhook bot status"
 
 
-def test_given_blacklist_product__when_add_new_product__then_add_unmapped_card_to_products():
+def test__given_blacklist_product__when_add_new_product__then_add_unmapped_card_to_products():
     product_collector = __test_product_collector()
 
     product_collector.add_new_product(__test_product("Blacklist 1"))
@@ -30,7 +31,7 @@ def test_given_blacklist_product__when_add_new_product__then_add_unmapped_card_t
     assert product_collector.products[0].mapped is False
 
 
-def test_given_blacklist_word_product__when_add_new_product__then_add_unmapped_card_to_products():
+def test__given_blacklist_word_product__when_add_new_product__then_add_unmapped_card_to_products():
     product_collector = __test_product_collector()
 
     product_collector.add_new_product(__test_product("Karte 1660 kaputt"))
@@ -39,7 +40,7 @@ def test_given_blacklist_word_product__when_add_new_product__then_add_unmapped_c
     assert product_collector.products[0].mapped is False
 
 
-def test_given_product_not_in_usable_cards__when_add_new_product__then_add_unmapped_card_to_products():
+def test__given_product_not_in_usable_cards__when_add_new_product__then_add_unmapped_card_to_products():
     product_collector = __test_product_collector()
 
     product_collector.add_new_product(__test_product("Karte 1060"))
@@ -48,7 +49,7 @@ def test_given_product_not_in_usable_cards__when_add_new_product__then_add_unmap
     assert product_collector.products[0].mapped is False
 
 
-def test_given_usable_product__when_add_new_product__then_add_mapped_card_to_products():
+def test__given_usable_product__when_add_new_product__then_add_mapped_card_to_products():
     product_collector = __test_product_collector()
 
     product_collector.add_new_product(__test_product("Karte 1660"))
@@ -60,7 +61,7 @@ def test_given_usable_product__when_add_new_product__then_add_mapped_card_to_pro
     assert mapped_product.roi == (100 / 34.36)
 
 
-def test_given_timestamp_before_card__when_mapped_products_after_timestamp__then_card_is_time_relevant():
+def test__given_timestamp_before_card__when_mapped_products_after_timestamp__then_card_is_time_relevant():
     product_collector = __test_product_collector()
     product_collector.add_new_product(__test_product("1660"))
 
@@ -69,7 +70,7 @@ def test_given_timestamp_before_card__when_mapped_products_after_timestamp__then
     assert product_collector.products[0].time_relevant is True
 
 
-def test_given_timestamp_same_as_card__when_mapped_products_after_timestamp__then_card_is_time_relevant():
+def test__given_timestamp_same_as_card__when_mapped_products_after_timestamp__then_card_is_time_relevant():
     product_collector = __test_product_collector()
     product_collector.add_new_product(__test_product("1660"))
 
@@ -78,7 +79,7 @@ def test_given_timestamp_same_as_card__when_mapped_products_after_timestamp__the
     assert product_collector.products[0].time_relevant is True
 
 
-def test_given_timestamp_after_card__when_mapped_products_after_timestamp__then_card_is_not_time_relevant():
+def test__given_timestamp_after_card__when_mapped_products_after_timestamp__then_card_is_not_time_relevant():
     product_collector = __test_product_collector()
     product_collector.add_new_product(__test_product("1660"))
 
@@ -87,7 +88,7 @@ def test_given_timestamp_after_card__when_mapped_products_after_timestamp__then_
     assert product_collector.products[0].time_relevant is False
 
 
-def test_given_two_cards__when_products_size__then_2():
+def test__given_two_cards__when_products_size__then_2():
     product_collector = __test_product_collector()
     product_collector.add_new_product(__test_product("1660"))
     product_collector.add_new_product(__test_product("1660"))
@@ -95,7 +96,7 @@ def test_given_two_cards__when_products_size__then_2():
     assert product_collector.products_size() == 2
 
 
-def test_given_two_cards__when_print_result_to_console__then_right_console_output():
+def test__given_two_cards__when_print_result_to_console__then_right_console_output():
     product_collector = __test_product_collector()
     product_collector.add_new_product(__test_product("1660"))
     product_collector.add_new_product(__test_product("1660"))
