@@ -40,7 +40,7 @@ class Product:
         return '{0:.2f}'.format(self.roi)
 
     def display_string_uncolored(self):
-        return "\'{3}\' - {0} - ROI: {1} (Full Name: {2} -> {4})" \
+        return "\'{3}\' - {0} - ROI: {1} (Full Name: [{2}]({4}))" \
             .format(self.__price_formatted(),
                     self.__roi_formatted(),
                     self._name,
