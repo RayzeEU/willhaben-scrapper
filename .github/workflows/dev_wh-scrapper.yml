@@ -46,7 +46,6 @@ jobs:
         with:
           pytest-root-dir: 'src'
           pytest-tests-dir: 'test'
-          requirements-file: 'requirements.txt'
           cov-omit-list: 'test/*,**/init.py,**/__init__.py,src/main.py,src/calculator/**/*'
           cov-threshold-single: ${{ env.COVERAGE_SINGLE }}
           cov-threshold-total: ${{ env.COVERAGE_TOTAL }}
