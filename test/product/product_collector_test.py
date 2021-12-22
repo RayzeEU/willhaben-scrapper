@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+from unittest import mock
 
 from src.product.product import Product
 from src.product.product_collector import ProductCollector
@@ -96,7 +97,8 @@ def test__given_two_cards__when_products_size__then_2():
     assert product_collector.products_size() == 2
 
 
-def test__given_two_cards__when_print_result_to_console__then_right_console_output():
+@mock.patch("src.product.product_collector.logging", return_value=None, autospec=True)
+def test__given_two_cards__when_print_result_to_console__then_right_console_output(logging_mock):
     product_collector = __test_product_collector()
     product_collector.add_new_product(__test_product("1660"))
     product_collector.add_new_product(__test_product("1660"))

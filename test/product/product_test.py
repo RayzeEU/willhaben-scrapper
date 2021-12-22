@@ -62,7 +62,7 @@ def test__given_product__when_display_string_uncolored__then_string_with_values_
 
 
 def __expected_display_string_uncolored(product: Product) -> str:
-    return "\'{3}\' - {0} - ROI: {1} (Full Name: {2} -> {4})" \
+    return "\'{3}\' - {0} - ROI: {1} (Full Name: [{2}]({4}))" \
         .format(__expected_price_formatted(product.price),
                 __expected_roi_formatted(product.roi),
                 "Name",

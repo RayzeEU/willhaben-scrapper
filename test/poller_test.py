@@ -31,7 +31,8 @@ def __load_test_config():
 
 
 @mock.patch("src.product.product_collector.Webhook", return_value=None, autospec=True)
-def test__given_test_html_page__when_check_website__then_product_collector_in_page_poller_contains_25_products(webhook_mock):
+@mock.patch("src.product.product_collector.logging", return_value=None, autospec=True)
+def test__given_test_html_page__when_check_website__then_product_collector_in_page_poller_contains_25_products(webhook_mock, logging_mock):
     config = __load_test_config()
     page_poller = __test_page_poller(config)
 
