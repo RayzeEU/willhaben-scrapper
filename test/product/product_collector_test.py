@@ -108,8 +108,28 @@ def test__given_two_cards__when_print_result_to_console__then_right_console_outp
     #  Should not throw an error for now.
 
 
-def __test_product(name: str) -> Product:
-    return Product(name, "100", "/Link", "16.12. - 20:37 Uhr")
+@mock.patch("src.product.product_collector.logging", return_value=None, autospec=True)
+@mock.patch("src.product.product_collector.Webhook", return_value=None, autospec=True)
+def test__given_two_cards__when_print_result_to_console__then_right_console_output(logging_mock, webhook_mock):
+    product_collector = __test_product_collector()
+    __add_product_to(product_collector)
+    __add_product_to(product_collector)
+
+    product_collector.send_result_to_discord()
+    # TODO Verify console output -> not that important for now as it is only used for local testing.
+    #  Should not throw an error for now.
+
+
+def __add_product_to(product_collector):
+    now = datetime.now()
+    product = __test_product("1660", timestamp_text=f"Heute, {now.hour}:{now.minute} Uhr")
+    product.mark_as_mapped()
+    product.mark_as_time_relevant()
+    product_collector.add_new_product(product)
+
+
+def __test_product(name: str, timestamp_text="16.12. - 20:37 Uhr") -> Product:
+    return Product(name, "100", "/Link", timestamp_text)
 
 
 def __test_product_collector() -> ProductCollector:
