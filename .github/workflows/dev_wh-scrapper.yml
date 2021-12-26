@@ -46,7 +46,7 @@ jobs:
         with:
           pytest-root-dir: 'src'
           pytest-tests-dir: 'test'
-          cov-omit-list: '**/init.py,**/__init__.py,src/main.py,src/calculator/**/*'
+          cov-omit-list: '**/init.py,**/__init__.py,src/main.py,src/calculator/calc.py'
           cov-threshold-single: ${{ env.COVERAGE_SINGLE }}
           cov-threshold-total: ${{ env.COVERAGE_TOTAL }}
 
