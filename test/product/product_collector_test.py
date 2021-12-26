@@ -112,8 +112,8 @@ def test__given_two_cards__when_print_result_to_console__then_right_console_outp
 @mock.patch("src.product.product_collector.Webhook", return_value=None, autospec=True)
 def test__given_two_cards__when_send_result_to_discord__then_right_discord_message(logging_mock, webhook_mock):
     product_collector = __test_product_collector()
-    __add_product_to(product_collector)
-    __add_product_to(product_collector)
+    __add_product_with_timestamp_now_to(product_collector)
+    __add_product_with_timestamp_now_to(product_collector)
 
     product_collector.send_result_to_discord()
     # TODO Verify console output -> not that important for now as it is only used for local testing.
@@ -125,14 +125,14 @@ def test__given_two_cards__when_send_result_to_discord__then_right_discord_messa
 def test__given_cards_where_message_is_over_1999_chars__when_send_result_to_discord__then_message_length_is_maximum_1999(logging_mock, webhook_mock):
     product_collector = __test_product_collector()
     for _ in range(100):
-        __add_product_to(product_collector)
+        __add_product_with_timestamp_now_to(product_collector)
 
     product_collector.send_result_to_discord()
     # TODO Verify console output -> not that important for now as it is only used for local testing.
     #  Should not throw an error for now.
 
 
-def __add_product_to(product_collector):
+def __add_product_with_timestamp_now_to(product_collector):
     now = datetime.now()
     product = __test_product("1660", timestamp_text=f"Heute, {now.hour}:{now.minute} Uhr")
     product.mark_as_mapped()
