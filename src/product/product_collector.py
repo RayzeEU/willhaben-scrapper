@@ -81,7 +81,8 @@ class ProductCollector:
             message = self.__add_line_break_if_message_not_empty(message)
 
             message = message + product.display_string_uncolored()
-            if len(message) > 1999:
+            if len(message) > 2000:
+                message = message[:2000]
                 break
 
         return message
