@@ -1,10 +1,14 @@
 from src.background_colors import BackgroundColors
 from src.product.product import Product
 from src.translator.currency_translator import CurrencyTranslator
+
 from src.translator.timestamp_translator import TimestampTranslator
+
 
 TEST_PRODUCT_SHORT_NAME = "Card name"
 TEST_PRODUCT_NAME = "Name"
+TEST_PRODUCT_PRICE_TEXT = "199"
+TEST_PRODUCT_PRICE = CurrencyTranslator.text_to_int(TEST_PRODUCT_PRICE_TEXT)
 
 
 def test__given_values__when_constructor__then_instance_with_values():
@@ -12,7 +16,7 @@ def test__given_values__when_constructor__then_instance_with_values():
 
     assert product._name == TEST_PRODUCT_NAME
     assert product._short_name == ""
-    assert product.price == CurrencyTranslator.text_to_int("199")
+    assert product._price == TEST_PRODUCT_PRICE
     assert product.roi == 0
     assert product.link == "https://www.willhaben.at/Link"
     assert product.timestamp == TimestampTranslator.text_to_timestamp_or_max_if_not_today("16.12. - 20:37 Uhr")
@@ -25,7 +29,7 @@ def test__given_card_name_and_profit_per_month__when_set_product_properties__the
     product.set_product_properties(TEST_PRODUCT_SHORT_NAME, 20.0)
 
     assert product._short_name == TEST_PRODUCT_SHORT_NAME
-    assert product.roi == (float(product.price) / 20)
+    assert product.roi == (float(TEST_PRODUCT_PRICE) / 20)
 
 
 def test__given_product__when_display_string_colored__then_string_with_values_from_product():
@@ -38,7 +42,7 @@ def test__given_product__when_display_string_colored__then_string_with_values_fr
 
 def __expected_display_string_colored(product: Product) -> str:
     return "{6}\'{5}\' - {0}{7} - ROI: {3}{1}{4} (Full Name: {2} -> {8})" \
-        .format(__expected_price_formatted(product.price),
+        .format(__expected_price_formatted(TEST_PRODUCT_PRICE),
                 __expected_roi_formatted(product.roi),
                 TEST_PRODUCT_NAME,
                 BackgroundColors.OKGREEN,
@@ -67,7 +71,7 @@ def test__given_product__when_display_string_uncolored__then_string_with_values_
 
 def __expected_display_string_uncolored(product: Product) -> str:
     return "\'{3}\' - {0} - ROI: {1} (Full Name: [{2}]({4}))" \
-        .format(__expected_price_formatted(product.price),
+        .format(__expected_price_formatted(TEST_PRODUCT_PRICE),
                 __expected_roi_formatted(product.roi),
                 TEST_PRODUCT_NAME,
                 TEST_PRODUCT_SHORT_NAME,
@@ -96,7 +100,7 @@ def test__given_product__when_name_lowercase__then_name_as_lowercase():
 
 
 def __test_product() -> Product:
-    return Product(TEST_PRODUCT_NAME, "199", "/Link", "16.12. - 20:37 Uhr")
+    return Product(TEST_PRODUCT_NAME, TEST_PRODUCT_PRICE_TEXT, "/Link", "16.12. - 20:37 Uhr")
 
 
 def test__given_product_on_blacklist_words__when_is_blacklisted__then_true():

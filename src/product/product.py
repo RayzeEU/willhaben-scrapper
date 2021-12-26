@@ -8,7 +8,7 @@ class Product:
     def __init__(self, name: str, price_text: str, link: str, timestamp_text: str):
         self._name = name
         self._short_name = ""
-        self.price = CurrencyTranslator.text_to_int(price_text)
+        self._price = CurrencyTranslator.text_to_int(price_text)
         self.roi = 0.00
         self.link = 'https://www.willhaben.at' + link
         self.timestamp = TimestampTranslator.text_to_timestamp_or_max_if_not_today(timestamp_text)
@@ -18,7 +18,7 @@ class Product:
     def set_product_properties(self, card_name: str, profit_per_month: float):
         self._short_name = card_name
 
-        return_of_investment = float(self.price) / profit_per_month
+        return_of_investment = float(self._price) / profit_per_month
         self.roi = float(return_of_investment)
 
     def display_string_colored(self):
@@ -34,7 +34,7 @@ class Product:
                     self.link)
 
     def __price_formatted(self):
-        return CurrencyTranslator.int_to_text(self.price)
+        return CurrencyTranslator.int_to_text(self._price)
 
     def __roi_formatted(self):
         return '{0:.2f}'.format(self.roi)
