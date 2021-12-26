@@ -9,7 +9,7 @@ class Product:
         self._name = name
         self._short_name = ""
         self._price = CurrencyTranslator.text_to_int(price_text)
-        self.roi = 0.00
+        self._roi = 0.00
         self.link = 'https://www.willhaben.at' + link
         self.timestamp = TimestampTranslator.text_to_timestamp_or_max_if_not_today(timestamp_text)
         self.mapped = False
@@ -19,7 +19,7 @@ class Product:
         self._short_name = card_name
 
         return_of_investment = float(self._price) / profit_per_month
-        self.roi = float(return_of_investment)
+        self._roi = float(return_of_investment)
 
     def display_string_colored(self):
         return "{6}\'{5}\' - {0}{7} - ROI: {3}{1}{4} (Full Name: {2} -> {8})" \
@@ -37,7 +37,7 @@ class Product:
         return CurrencyTranslator.int_to_text(self._price)
 
     def __roi_formatted(self):
-        return '{0:.2f}'.format(self.roi)
+        return '{0:.2f}'.format(self._roi)
 
     def display_string_uncolored(self):
         return "\'{3}\' - {0} - ROI: {1} (Full Name: [{2}]({4}))" \
@@ -59,3 +59,6 @@ class Product:
     def is_blacklisted(self, blacklist_words, blacklist) -> bool:
         return any(word in self._name for word in blacklist_words) \
                or self._name in blacklist
+
+    def roi(self) -> float:
+        return self._roi

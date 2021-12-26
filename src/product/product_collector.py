@@ -56,7 +56,7 @@ class ProductCollector:
 
     def __list_of_products_by_filter_ordered_by_roi_asc(self, lambda_function):
         filtered_list = list(filter(lambda_function, self.products))
-        filtered_list.sort(key=lambda p: p.roi, reverse=True)
+        filtered_list.sort(key=lambda p: p.roi(), reverse=True)
         return filtered_list
 
     def __print_mapped_products(self):

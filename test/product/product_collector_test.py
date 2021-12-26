@@ -59,7 +59,7 @@ def test__given_usable_product__when_add_new_product__then_add_mapped_card_to_pr
     mapped_product = product_collector.products[0]
     assert mapped_product.mapped is True
     assert mapped_product._short_name == "1660"
-    assert mapped_product.roi == (100 / 34.36)
+    assert mapped_product.roi() == (100 / 34.36)
 
 
 def test__given_timestamp_before_card__when_mapped_products_after_timestamp__then_card_is_time_relevant():

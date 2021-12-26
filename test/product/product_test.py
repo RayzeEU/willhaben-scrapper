@@ -9,6 +9,8 @@ TEST_PRODUCT_SHORT_NAME = "Card name"
 TEST_PRODUCT_NAME = "Name"
 TEST_PRODUCT_PRICE_TEXT = "199"
 TEST_PRODUCT_PRICE = CurrencyTranslator.text_to_int(TEST_PRODUCT_PRICE_TEXT)
+TEST_PRODUCT_PROFIT_PER_MONTH = 20.0
+TEST_PRODUCT_ROI = (float(TEST_PRODUCT_PRICE) / TEST_PRODUCT_PROFIT_PER_MONTH)
 
 
 def test__given_values__when_constructor__then_instance_with_values():
@@ -17,7 +19,7 @@ def test__given_values__when_constructor__then_instance_with_values():
     assert product._name == TEST_PRODUCT_NAME
     assert product._short_name == ""
     assert product._price == TEST_PRODUCT_PRICE
-    assert product.roi == 0
+    assert product._roi == 0
     assert product.link == "https://www.willhaben.at/Link"
     assert product.timestamp == TimestampTranslator.text_to_timestamp_or_max_if_not_today("16.12. - 20:37 Uhr")
     assert product.mapped is False
@@ -26,10 +28,10 @@ def test__given_values__when_constructor__then_instance_with_values():
 
 def test__given_card_name_and_profit_per_month__when_set_product_properties__then_instance_with_new_values():
     product = __test_product()
-    product.set_product_properties(TEST_PRODUCT_SHORT_NAME, 20.0)
+    product.set_product_properties(TEST_PRODUCT_SHORT_NAME, TEST_PRODUCT_PROFIT_PER_MONTH)
 
     assert product._short_name == TEST_PRODUCT_SHORT_NAME
-    assert product.roi == (float(TEST_PRODUCT_PRICE) / 20)
+    assert product._roi == TEST_PRODUCT_ROI
 
 
 def test__given_product__when_display_string_colored__then_string_with_values_from_product():
@@ -43,7 +45,7 @@ def test__given_product__when_display_string_colored__then_string_with_values_fr
 def __expected_display_string_colored(product: Product) -> str:
     return "{6}\'{5}\' - {0}{7} - ROI: {3}{1}{4} (Full Name: {2} -> {8})" \
         .format(__expected_price_formatted(TEST_PRODUCT_PRICE),
-                __expected_roi_formatted(product.roi),
+                __expected_roi_formatted(TEST_PRODUCT_ROI),
                 TEST_PRODUCT_NAME,
                 BackgroundColors.OKGREEN,
                 BackgroundColors.ENDC,
@@ -63,7 +65,7 @@ def __expected_roi_formatted(roi) -> str:
 
 def test__given_product__when_display_string_uncolored__then_string_with_values_from_product():
     product = __test_product()
-    product.set_product_properties(TEST_PRODUCT_SHORT_NAME, 20.0)
+    product.set_product_properties(TEST_PRODUCT_SHORT_NAME, TEST_PRODUCT_PROFIT_PER_MONTH)
     uncolored = product.display_string_uncolored()
 
     assert uncolored == __expected_display_string_uncolored(product)
@@ -72,7 +74,7 @@ def test__given_product__when_display_string_uncolored__then_string_with_values_
 def __expected_display_string_uncolored(product: Product) -> str:
     return "\'{3}\' - {0} - ROI: {1} (Full Name: [{2}]({4}))" \
         .format(__expected_price_formatted(TEST_PRODUCT_PRICE),
-                __expected_roi_formatted(product.roi),
+                __expected_roi_formatted(TEST_PRODUCT_ROI),
                 TEST_PRODUCT_NAME,
                 TEST_PRODUCT_SHORT_NAME,
                 product.link)
