@@ -10,7 +10,7 @@ class Product:
         self._short_name = ""
         self._price = CurrencyTranslator.text_to_int(price_text)
         self._roi = 0.00
-        self.link = 'https://www.willhaben.at' + link
+        self._link = 'https://www.willhaben.at' + link
         self.timestamp = TimestampTranslator.text_to_timestamp_or_max_if_not_today(timestamp_text)
         self.mapped = False
         self.time_relevant = False
@@ -31,7 +31,7 @@ class Product:
                     self._short_name,
                     BackgroundColors.OKBLUE,
                     BackgroundColors.ENDC,
-                    self.link)
+                    self._link)
 
     def __price_formatted(self):
         return CurrencyTranslator.int_to_text(self._price)
@@ -45,7 +45,7 @@ class Product:
                     self.__roi_formatted(),
                     self._name,
                     self._short_name,
-                    self.link)
+                    self._link)
 
     def mark_as_mapped(self):
         self.mapped = True
