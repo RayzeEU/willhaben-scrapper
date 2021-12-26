@@ -7,7 +7,7 @@ class Product:
 
     def __init__(self, name: str, price_text: str, link: str, timestamp_text: str):
         self._name = name
-        self.short_name = ""
+        self._short_name = ""
         self.price = CurrencyTranslator.text_to_int(price_text)
         self.roi = 0.00
         self.link = 'https://www.willhaben.at' + link
@@ -16,7 +16,7 @@ class Product:
         self.time_relevant = False
 
     def set_product_properties(self, card_name: str, profit_per_month: float):
-        self.short_name = card_name
+        self._short_name = card_name
 
         return_of_investment = float(self.price) / profit_per_month
         self.roi = float(return_of_investment)
@@ -28,7 +28,7 @@ class Product:
                     self._name,
                     BackgroundColors.OKGREEN,
                     BackgroundColors.ENDC,
-                    self.short_name,
+                    self._short_name,
                     BackgroundColors.OKBLUE,
                     BackgroundColors.ENDC,
                     self.link)
@@ -44,7 +44,7 @@ class Product:
             .format(self.__price_formatted(),
                     self.__roi_formatted(),
                     self._name,
-                    self.short_name,
+                    self._short_name,
                     self.link)
 
     def mark_as_mapped(self):
