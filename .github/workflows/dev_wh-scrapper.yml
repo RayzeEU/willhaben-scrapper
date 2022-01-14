@@ -38,6 +38,7 @@ jobs:
       - name: Install dependencies
         run:  |
           python -m pip install --upgrade pip
+          pip install flake8 pytest pytest-cov
           pip install -r requirements.txt
 
       - name: Run Tests with code coverage
@@ -54,6 +55,16 @@ jobs:
         uses: peter-evans/commit-comment@v1
         with:
           body: ${{ steps.pytester-cov.outputs.output-table }}
+
+      - name: Build coverage file
+        run: |
+          pytest --junitxml=pytest.xml --cov-report=term-missing --cov=src test/ | tee pytest-coverage.txt
+
+      - name: Pytest coverage comment
+        uses: MishaKav/pytest-coverage-comment@main
+        with:
+          pytest-coverage-path: ./pytest-coverage.txt
+          junitxml-path: ./pytest.xml
         
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
