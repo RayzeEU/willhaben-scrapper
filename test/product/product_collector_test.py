@@ -128,7 +128,7 @@ def test__given_two_cards__when_send_result_to_discord__then_right_discord_messa
 
     product_collector.send_result_to_discord()
 
-    assert len(webhook_mock.method_calls) == 2
+    assert len(webhook_mock.method_calls) == 1
 
 
 @mock.patch("src.product.product_collector.Webhook", return_value=None, autospec=True)
@@ -139,7 +139,7 @@ def test__given_cards_where_message_is_over_1999_chars__when_send_result_to_disc
 
     product_collector.send_result_to_discord()
 
-    assert len(webhook_mock.method_calls) == 2
+    assert len(webhook_mock.method_calls) == 1
 
 
 def __add_product_with_timestamp_now_to(product_collector):

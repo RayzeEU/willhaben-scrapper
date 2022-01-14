@@ -87,7 +87,7 @@ class ProductCollector:
         return message
 
     def __list_of_relevant_products_order_by_roi_asc(self) -> List[Product]:
-        return self.__list_of_products_by_filter_ordered_by_roi_asc(lambda x: x.relevant_for_discord)
+        return self.__list_of_products_by_filter_ordered_by_roi_asc(lambda x: x.relevant_for_discord())
 
     @staticmethod
     def __send_message_to_discord(webhook, message):
