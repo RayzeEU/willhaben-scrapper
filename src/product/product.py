@@ -14,7 +14,7 @@ class Product:
         self._roi = 0.00
         self._link = 'https://www.willhaben.at' + link
         self._timestamp = TimestampTranslator.text_to_timestamp_or_max_if_not_today(timestamp_text)
-        self.mapped = False
+        self._mapped = False
         self.time_relevant = False
 
     def set_product_properties(self, card_name: str, profit_per_month: float):
@@ -50,7 +50,7 @@ class Product:
                     self._link)
 
     def mark_as_mapped(self):
-        self.mapped = True
+        self._mapped = True
 
     def mark_as_time_relevant(self, timestamp: datetime):
         if self._timestamp >= timestamp:
@@ -65,3 +65,9 @@ class Product:
 
     def roi(self) -> float:
         return self._roi
+
+    def is_mapped(self) -> bool:
+        return self._mapped
+
+    def relevant_for_discord(self) -> bool:
+        return self.time_relevant and self._mapped

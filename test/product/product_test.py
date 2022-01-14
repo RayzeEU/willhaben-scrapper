@@ -22,7 +22,7 @@ def test__given_values__when_constructor__then_instance_with_values():
     assert product._roi == 0
     assert product._link == TEST_PRODUCT_LINK
     assert product._timestamp == TimestampTranslator.text_to_timestamp_or_max_if_not_today("16.12. - 20:37 Uhr")
-    assert product.mapped is False
+    assert product._mapped is False
     assert product.time_relevant is False
 
 
@@ -84,14 +84,18 @@ def test__given_product_not_mapped__when_mark_as_mapped__then_product_is_marked_
     product = __test_product()
     product.mark_as_mapped()
 
-    assert product.mapped is True
+    assert product._mapped is True
 
 
 def test__given_product_not_time_relevant__when_mark_as_time_relevant__then_product_is_marked_as_time_relevant():
     product = __test_product()
-    product.mark_as_time_relevant(TimestampTranslator.text_to_timestamp_or_max_if_not_today("16.12. - 20:34 Uhr"))
+    __mark_as_time_relevant(product)
 
     assert product.time_relevant is True
+
+
+def __mark_as_time_relevant(product):
+    product.mark_as_time_relevant(TimestampTranslator.text_to_timestamp_or_max_if_not_today("16.12. - 20:34 Uhr"))
 
 
 def test__given_product__when_name_lowercase__then_name_as_lowercase():
@@ -149,3 +153,44 @@ def test__given_product_not_on_blacklist__when_is_blacklisted__then_false():
     ]
 
     assert product.is_blacklisted([], blacklist) is False
+
+
+def test__given_mapped_product__when_is_mapped__then_true():
+    product = __test_product()
+    product.mark_as_mapped()
+
+    assert product.is_mapped() is True
+
+
+def test__given_not_mapped_product__when_is_mapped__then_false():
+    product = __test_product()
+
+    assert product.is_mapped() is False
+
+
+def test__given_mapped_and_time_relevant_product__when_relevant_for_discord__then_true():
+    product = __test_product()
+    product.mark_as_mapped()
+    __mark_as_time_relevant(product)
+
+    assert product.relevant_for_discord() is True
+
+
+def test__given_not_mapped_and_time_relevant_product__when_relevant_for_discord__then_false():
+    product = __test_product()
+    __mark_as_time_relevant(product)
+
+    assert product.relevant_for_discord() is False
+
+
+def test__given_mapped_and_not_time_relevant_product__when_relevant_for_discord__then_false():
+    product = __test_product()
+    product.mark_as_mapped()
+
+    assert product.relevant_for_discord() is False
+
+
+def test__given_not_mapped_and_not_time_relevant_product__when_relevant_for_discord__then_false():
+    product = __test_product()
+
+    assert product.relevant_for_discord() is False

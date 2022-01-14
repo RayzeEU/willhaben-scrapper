@@ -30,7 +30,7 @@ def test__given_blacklist_product__when_add_new_product__then_add_unmapped_card_
     product_collector.add_new_product(__test_product("Blacklist 1"))
 
     assert len(product_collector.products) == 1
-    assert product_collector.products[0].mapped is False
+    assert product_collector.products[0].is_mapped() is False
 
 
 def test__given_blacklist_word_product__when_add_new_product__then_add_unmapped_card_to_products():
@@ -39,7 +39,7 @@ def test__given_blacklist_word_product__when_add_new_product__then_add_unmapped_
     product_collector.add_new_product(__test_product("Karte 1660 kaputt"))
 
     assert len(product_collector.products) == 1
-    assert product_collector.products[0].mapped is False
+    assert product_collector.products[0].is_mapped() is False
 
 
 def test__given_product_not_in_usable_cards__when_add_new_product__then_add_unmapped_card_to_products():
@@ -48,7 +48,7 @@ def test__given_product_not_in_usable_cards__when_add_new_product__then_add_unma
     product_collector.add_new_product(__test_product("Karte 1060"))
 
     assert len(product_collector.products) == 1
-    assert product_collector.products[0].mapped is False
+    assert product_collector.products[0].is_mapped() is False
 
 
 def test__given_usable_product__when_add_new_product__then_add_mapped_card_to_products():
@@ -58,7 +58,7 @@ def test__given_usable_product__when_add_new_product__then_add_mapped_card_to_pr
 
     assert len(product_collector.products) == 1
     mapped_product = product_collector.products[0]
-    assert mapped_product.mapped is True
+    assert mapped_product.is_mapped() is True
     assert mapped_product._short_name == "1660"
     assert mapped_product.roi() == (100 / 34.36)
 
