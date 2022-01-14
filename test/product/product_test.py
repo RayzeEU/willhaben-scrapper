@@ -1,7 +1,6 @@
 from src.background_colors import BackgroundColors
 from src.product.product import Product
 from src.translator.currency_translator import CurrencyTranslator
-
 from src.translator.timestamp_translator import TimestampTranslator
 
 
@@ -22,7 +21,7 @@ def test__given_values__when_constructor__then_instance_with_values():
     assert product._price == TEST_PRODUCT_PRICE
     assert product._roi == 0
     assert product._link == TEST_PRODUCT_LINK
-    assert product.timestamp == TimestampTranslator.text_to_timestamp_or_max_if_not_today("16.12. - 20:37 Uhr")
+    assert product._timestamp == TimestampTranslator.text_to_timestamp_or_max_if_not_today("16.12. - 20:37 Uhr")
     assert product.mapped is False
     assert product.time_relevant is False
 
@@ -90,7 +89,7 @@ def test__given_product_not_mapped__when_mark_as_mapped__then_product_is_marked_
 
 def test__given_product_not_time_relevant__when_mark_as_time_relevant__then_product_is_marked_as_time_relevant():
     product = __test_product()
-    product.mark_as_time_relevant()
+    product.mark_as_time_relevant(TimestampTranslator.text_to_timestamp_or_max_if_not_today("16.12. - 20:34 Uhr"))
 
     assert product.time_relevant is True
 

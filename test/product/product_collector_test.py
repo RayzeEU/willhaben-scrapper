@@ -4,6 +4,7 @@ from unittest import mock
 
 from src.product.product import Product
 from src.product.product_collector import ProductCollector
+from src.translator.timestamp_translator import TimestampTranslator
 
 _config = {
     'blacklist': ['Blacklist 1', 'Blacklist 2'],
@@ -136,7 +137,7 @@ def __add_product_with_timestamp_now_to(product_collector):
     now = datetime.now()
     product = __test_product("1660", timestamp_text=f"Heute, {now.hour}:{now.minute} Uhr")
     product.mark_as_mapped()
-    product.mark_as_time_relevant()
+    product.mark_as_time_relevant(TimestampTranslator.text_to_timestamp_or_max_if_not_today("16.12. - 20:34 Uhr"))
     product_collector.add_new_product(product)
 
 

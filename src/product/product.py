@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from src.translator.currency_translator import CurrencyTranslator
 from src.background_colors import BackgroundColors
 from src.translator.timestamp_translator import TimestampTranslator
@@ -11,7 +13,7 @@ class Product:
         self._price = CurrencyTranslator.text_to_int(price_text)
         self._roi = 0.00
         self._link = 'https://www.willhaben.at' + link
-        self.timestamp = TimestampTranslator.text_to_timestamp_or_max_if_not_today(timestamp_text)
+        self._timestamp = TimestampTranslator.text_to_timestamp_or_max_if_not_today(timestamp_text)
         self.mapped = False
         self.time_relevant = False
 
@@ -50,8 +52,9 @@ class Product:
     def mark_as_mapped(self):
         self.mapped = True
 
-    def mark_as_time_relevant(self):
-        self.time_relevant = True
+    def mark_as_time_relevant(self, timestamp: datetime):
+        if self._timestamp >= timestamp:
+            self.time_relevant = True
 
     def name_lowercase(self) -> str:
         return self._name.replace(' ', '').lower()

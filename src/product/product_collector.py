@@ -32,8 +32,7 @@ class ProductCollector:
 
     def mapped_products_after_timestamp(self, timestamp):
         for product in self.products:
-            if product.timestamp >= timestamp:
-                product.mark_as_time_relevant()
+            product.mark_as_time_relevant(timestamp)
 
     def products_size(self):
         return len(self.products)
