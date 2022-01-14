@@ -69,7 +69,7 @@ def test__given_timestamp_before_card__when_mapped_products_after_timestamp__the
 
     product_collector.mapped_products_after_timestamp(datetime.today().replace(month=12, day=16, hour=20, minute=32, second=0, microsecond=0))
 
-    assert product_collector.products[0].time_relevant is True
+    assert product_collector.products[0]._time_relevant is True
 
 
 def test__given_timestamp_same_as_card__when_mapped_products_after_timestamp__then_card_is_time_relevant():
@@ -78,7 +78,7 @@ def test__given_timestamp_same_as_card__when_mapped_products_after_timestamp__th
 
     product_collector.mapped_products_after_timestamp(datetime.today().replace(month=12, day=16, hour=20, minute=37, second=0, microsecond=0))
 
-    assert product_collector.products[0].time_relevant is True
+    assert product_collector.products[0]._time_relevant is True
 
 
 def test__given_timestamp_after_card__when_mapped_products_after_timestamp__then_card_is_not_time_relevant():
@@ -87,7 +87,7 @@ def test__given_timestamp_after_card__when_mapped_products_after_timestamp__then
 
     product_collector.mapped_products_after_timestamp(datetime.today().replace(month=12, day=16, hour=20, minute=42, second=0, microsecond=0))
 
-    assert product_collector.products[0].time_relevant is False
+    assert product_collector.products[0]._time_relevant is False
 
 
 def test__given_two_cards__when_products_size__then_2():

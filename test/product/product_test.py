@@ -23,7 +23,7 @@ def test__given_values__when_constructor__then_instance_with_values():
     assert product._link == TEST_PRODUCT_LINK
     assert product._timestamp == TimestampTranslator.text_to_timestamp_or_max_if_not_today("16.12. - 20:37 Uhr")
     assert product._mapped is False
-    assert product.time_relevant is False
+    assert product._time_relevant is False
 
 
 def test__given_card_name_and_profit_per_month__when_set_product_properties__then_instance_with_new_values():
@@ -91,7 +91,7 @@ def test__given_product_not_time_relevant__when_mark_as_time_relevant__then_prod
     product = __test_product()
     __mark_as_time_relevant(product)
 
-    assert product.time_relevant is True
+    assert product._time_relevant is True
 
 
 def __mark_as_time_relevant(product):

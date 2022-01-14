@@ -15,7 +15,7 @@ class Product:
         self._link = 'https://www.willhaben.at' + link
         self._timestamp = TimestampTranslator.text_to_timestamp_or_max_if_not_today(timestamp_text)
         self._mapped = False
-        self.time_relevant = False
+        self._time_relevant = False
 
     def set_product_properties(self, card_name: str, profit_per_month: float):
         self._short_name = card_name
@@ -54,7 +54,7 @@ class Product:
 
     def mark_as_time_relevant(self, timestamp: datetime):
         if self._timestamp >= timestamp:
-            self.time_relevant = True
+            self._time_relevant = True
 
     def name_lowercase(self) -> str:
         return self._name.replace(' ', '').lower()
@@ -70,4 +70,4 @@ class Product:
         return self._mapped
 
     def relevant_for_discord(self) -> bool:
-        return self.time_relevant and self._mapped
+        return self._time_relevant and self._mapped
