@@ -17,9 +17,6 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      COVERAGE_SINGLE: 60
-      COVERAGE_TOTAL: 60
 
     steps:
       - name: Checkout repository
@@ -40,21 +37,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install flake8 pytest pytest-cov
           pip install -r requirements.txt
-
-      - name: Run Tests with code coverage
-        id: pytester-cov
-        uses: alexanderdamiani/pytester-cov@v1.2.1
-        with:
-          pytest-root-dir: 'src'
-          pytest-tests-dir: 'test'
-          cov-omit-list: '**/init.py,**/__init__.py,src/main.py,src/calculator/calc.py'
-          cov-threshold-single: ${{ env.COVERAGE_SINGLE }}
-          cov-threshold-total: ${{ env.COVERAGE_TOTAL }}
-
-      - name: Commit pytest coverage table
-        uses: peter-evans/commit-comment@v1
-        with:
-          body: ${{ steps.pytester-cov.outputs.output-table }}
 
       - name: Build coverage file
         run: |
