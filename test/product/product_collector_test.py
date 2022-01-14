@@ -102,11 +102,22 @@ def test__given_two_cards__when_products_size__then_2():
 def test__given_two_cards__when_print_result_to_console__then_right_console_output(logging_mock):
     product_collector = __test_product_collector()
     product_collector.add_new_product(__test_product("1660"))
-    product_collector.add_new_product(__test_product("1660"))
+    product_collector.add_new_product(__test_product("16XX"))
 
     product_collector.print_result_to_console(True)
 
     assert len(logging_mock.method_calls) == 5
+
+
+@mock.patch("src.product.product_collector.logging", return_value=None, autospec=True)
+def test__given_two_cards_print_non_mapped_false__when_print_result_to_console__then_right_console_output(logging_mock):
+    product_collector = __test_product_collector()
+    product_collector.add_new_product(__test_product("1660"))
+    product_collector.add_new_product(__test_product("16XX"))
+
+    product_collector.print_result_to_console(False)
+
+    assert len(logging_mock.method_calls) == 3
 
 
 @mock.patch("src.product.product_collector.Webhook", return_value=None, autospec=True)

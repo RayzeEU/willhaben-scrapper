@@ -51,7 +51,7 @@ class ProductCollector:
             logging.info(product.display_string_colored())
 
     def __list_of_not_mapped_products_order_by_roi_asc(self) -> List[Product]:
-        return self.__list_of_products_by_filter_ordered_by_roi_asc(lambda x: not x.is_mapped)
+        return self.__list_of_products_by_filter_ordered_by_roi_asc(lambda x: not x.is_mapped())
 
     def __list_of_products_by_filter_ordered_by_roi_asc(self, lambda_function):
         filtered_list = list(filter(lambda_function, self.products))
@@ -65,7 +65,7 @@ class ProductCollector:
             logging.info(product.display_string_colored())
 
     def __list_of_mapped_products_order_by_roi_asc(self) -> List[Product]:
-        return self.__list_of_products_by_filter_ordered_by_roi_asc(lambda x: x.is_mapped)
+        return self.__list_of_products_by_filter_ordered_by_roi_asc(lambda x: x.is_mapped())
 
     def send_result_to_discord(self):
         message = self.__build_discord_message()
