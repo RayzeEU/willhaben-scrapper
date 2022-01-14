@@ -4,6 +4,8 @@ from src.translator.currency_translator import CurrencyTranslator
 from src.background_colors import BackgroundColors
 from src.translator.timestamp_translator import TimestampTranslator
 
+BASE_URL = 'https://www.willhaben.at'
+
 
 class Product:
 
@@ -12,7 +14,7 @@ class Product:
         self._short_name = ""
         self._price = CurrencyTranslator.text_to_int(price_text)
         self._roi = 0.00
-        self._link = 'https://www.willhaben.at' + link
+        self._link = BASE_URL + link
         self._timestamp = TimestampTranslator.text_to_timestamp_or_max_if_not_today(timestamp_text)
         self._mapped = False
         self._time_relevant = False
@@ -23,7 +25,7 @@ class Product:
         return_of_investment = float(self._price) / profit_per_month
         self._roi = float(return_of_investment)
 
-    def display_string_colored(self):
+    def display_string_colored(self) -> str:
         return "{6}\'{5}\' - {0}{7} - ROI: {3}{1}{4} (Full Name: {2} -> {8})" \
             .format(self.__price_formatted(),
                     self.__roi_formatted(),
@@ -35,13 +37,13 @@ class Product:
                     BackgroundColors.ENDC,
                     self._link)
 
-    def __price_formatted(self):
+    def __price_formatted(self) -> str:
         return CurrencyTranslator.int_to_text(self._price)
 
-    def __roi_formatted(self):
+    def __roi_formatted(self) -> str:
         return '{0:.2f}'.format(self._roi)
 
-    def display_string_uncolored(self):
+    def display_string_uncolored(self) -> str:
         return "\'{3}\' - {0} - ROI: {1} (Full Name: [{2}]({4}))" \
             .format(self.__price_formatted(),
                     self.__roi_formatted(),
