@@ -14,7 +14,7 @@ def test__given_config__when_constructor__then_right_initial_values_are_set(prod
     page_poller = __test_page_poller(config)
 
     assert page_poller._show_non_mapping is True
-    assert page_poller.config == config
+    assert page_poller._config == config
     assert page_poller.product_collector is not None
     assert product_collector_mock.call_count == 1
 

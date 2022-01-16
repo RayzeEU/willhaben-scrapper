@@ -14,9 +14,9 @@ class PagePoller:
 
     def __init__(self, show_non_mapping, config):
         self._show_non_mapping = show_non_mapping
-        self.config = config
+        self._config = config
 
-        logging.info("%s cards are usable" % len(self.config["usable_cards"]))
+        logging.info("%s cards are usable" % len(self._config["usable_cards"]))
 
         self.product_collector = ProductCollector(config)
 
@@ -32,7 +32,7 @@ class PagePoller:
         logging.info("opening page ...")
 
         # According to www.willhaben.at/robots.txt the following user agent has all rights.
-        html = requests.get(self.config["url"], headers={'User-Agent': 'Mediapartners-Google'}).text
+        html = requests.get(self._config["url"], headers={'User-Agent': 'Mediapartners-Google'}).text
 
         parsed_html = lxml.html.fromstring(html)
 
