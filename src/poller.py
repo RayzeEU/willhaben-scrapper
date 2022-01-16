@@ -18,15 +18,15 @@ class PagePoller:
 
         logging.info("%s cards are usable" % len(self._config["usable_cards"]))
 
-        self.product_collector = ProductCollector(config)
+        self._product_collector = ProductCollector(config)
 
     def check_website(self):
         self.__scan_for_products_and_add_to()
 
         self.__check_new_cards()
 
-        self.product_collector.print_result_to_console(self._show_non_mapping)
-        self.product_collector.send_result_to_discord()
+        self._product_collector.print_result_to_console(self._show_non_mapping)
+        self._product_collector.send_result_to_discord()
 
     def __scan_for_products_and_add_to(self):
         logging.info("opening page ...")
@@ -59,7 +59,7 @@ class PagePoller:
                         'div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > span:nth-child(1)'):
                     card_price = card_price_element.text
 
-                self.product_collector.add_new_product(
+                self._product_collector.add_new_product(
                     Product(card_name, card_price, card_href, card_timestamp))
 
     def __check_new_cards(self):
@@ -68,4 +68,4 @@ class PagePoller:
         plus_one_hour = timedelta(hours=1)
         timestamp_to_check = check_timestamp - minus_five_minutes + plus_one_hour
 
-        self.product_collector.mapped_products_after_timestamp(timestamp_to_check)
+        self._product_collector.mapped_products_after_timestamp(timestamp_to_check)

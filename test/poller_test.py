@@ -15,7 +15,7 @@ def test__given_config__when_constructor__then_right_initial_values_are_set(prod
 
     assert page_poller._show_non_mapping is True
     assert page_poller._config == config
-    assert page_poller.product_collector is not None
+    assert page_poller._product_collector is not None
     assert product_collector_mock.call_count == 1
 
 
@@ -57,4 +57,4 @@ def test__given_test_html_page__when_check_website__then_product_collector_in_pa
     # send_result_to_discord
     call_count = call_count + 1
 
-    assert len(page_poller.product_collector.method_calls) == call_count
+    assert len(page_poller._product_collector.method_calls) == call_count
