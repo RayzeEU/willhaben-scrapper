@@ -7,8 +7,8 @@ import requests_mock
 from src.poller import PagePoller
 
 
-@mock.patch("src.product.product_collector.Webhook", return_value=None, autospec=True)
-def test__given_config__when_constructor__then_right_initial_values_are_set(webhook_mock):
+@mock.patch("src.poller.ProductCollector", autospec=True)
+def test__given_config__when_constructor__then_right_initial_values_are_set(product_collector_mock):
     config = __load_test_config()
 
     page_poller = __test_page_poller(config)
@@ -16,7 +16,7 @@ def test__given_config__when_constructor__then_right_initial_values_are_set(webh
     assert page_poller.show_non_mapping is True
     assert page_poller.config == config
     assert page_poller.product_collector is not None
-    assert len(webhook_mock.method_calls) == 2
+    assert product_collector_mock.call_count == 1
 
 
 def __test_page_poller(config):
@@ -32,9 +32,8 @@ def __load_test_config():
     return config
 
 
-@mock.patch("src.product.product_collector.Webhook", return_value=None, autospec=True)
-@mock.patch("src.product.product_collector.logging", return_value=None, autospec=True)
-def test__given_test_html_page__when_check_website__then_product_collector_in_page_poller_contains_25_products(webhook_mock, logging_mock):
+@mock.patch("src.poller.ProductCollector", autospec=True)
+def test__given_test_html_page__when_check_website__then_product_collector_in_page_poller_contains_25_products(product_collector_mock):
     config = __load_test_config()
     page_poller = __test_page_poller(config)
 
@@ -46,5 +45,16 @@ def test__given_test_html_page__when_check_website__then_product_collector_in_pa
 
     page_poller.check_website()
 
-    assert len(page_poller.product_collector.products) == 25
-    # TODO mock product_collector and just check the "add_new_product" method call count
+    # constructor
+    assert product_collector_mock.call_count == 1
+
+    # add products
+    call_count = 25
+    # mapped_products_after_timestamp
+    call_count = call_count + 1
+    # print_result_to_console
+    call_count = call_count + 1
+    # send_result_to_discord
+    call_count = call_count + 1
+
+    assert len(page_poller.product_collector.method_calls) == call_count
