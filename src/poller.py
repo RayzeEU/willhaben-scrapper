@@ -13,7 +13,7 @@ from src.product.product import Product
 class PagePoller:
 
     def __init__(self, show_non_mapping, config):
-        self.show_non_mapping = show_non_mapping
+        self._show_non_mapping = show_non_mapping
         self.config = config
 
         logging.info("%s cards are usable" % len(self.config["usable_cards"]))
@@ -25,7 +25,7 @@ class PagePoller:
 
         self.__check_new_cards()
 
-        self.product_collector.print_result_to_console(self.show_non_mapping)
+        self.product_collector.print_result_to_console(self._show_non_mapping)
         self.product_collector.send_result_to_discord()
 
     def __scan_for_products_and_add_to(self):
