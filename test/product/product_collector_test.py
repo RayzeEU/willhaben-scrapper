@@ -20,8 +20,8 @@ def test__given_config__when_constructor__then_instance_with_right_values():
     assert product_collector.usable_cards == _config["usable_cards"]
     assert product_collector.blacklist_words == _config["blacklist_words"]
     assert product_collector.blacklist == _config["blacklist"]
-    assert product_collector.webhook_latest_cards == "Webhook latest cards"
-    assert product_collector.webhook_bot_status == "Webhook bot status"
+    assert product_collector.webhook_latest_cards is not None
+    assert product_collector.webhook_bot_status is not None
 
 
 def test__given_blacklist_product__when_add_new_product__then_add_unmapped_card_to_products():
@@ -120,26 +120,26 @@ def test__given_two_cards_print_non_mapped_false__when_print_result_to_console__
     assert len(logging_mock.method_calls) == 3
 
 
-@mock.patch("src.product.product_collector.Webhook", return_value=None, autospec=True)
-def test__given_two_cards__when_send_result_to_discord__then_right_discord_message(webhook_mock):
+def test__given_two_cards__when_send_result_to_discord__then_right_discord_message():
     product_collector = __test_product_collector()
     __add_product_with_timestamp_now_to(product_collector)
     __add_product_with_timestamp_now_to(product_collector)
 
     product_collector.send_result_to_discord()
 
-    assert len(webhook_mock.method_calls) == 2
+    # Webhook Mock for latest_cards and bot_status is the same, so method_calls are the sum count for both variables
+    assert len(product_collector.webhook_latest_cards.method_calls) == 2
 
 
-@mock.patch("src.product.product_collector.Webhook", return_value=None, autospec=True)
-def test__given_cards_where_message_is_over_1999_chars__when_send_result_to_discord__then_message_length_is_maximum_1999(webhook_mock):
+def test__given_cards_where_message_is_over_1999_chars__when_send_result_to_discord__then_message_length_is_maximum_1999():
     product_collector = __test_product_collector()
     for _ in range(100):
         __add_product_with_timestamp_now_to(product_collector)
 
     product_collector.send_result_to_discord()
 
-    assert len(webhook_mock.method_calls) == 2
+    # Webhook Mock for latest_cards and bot_status is the same, so method_calls are the sum count for both variables
+    assert len(product_collector.webhook_latest_cards.method_calls) == 2
 
 
 def __add_product_with_timestamp_now_to(product_collector):
@@ -154,7 +154,8 @@ def __test_product(name: str, timestamp_text="16.12. - 20:37 Uhr") -> Product:
     return Product(name, "100", "/Link", timestamp_text)
 
 
-def __test_product_collector() -> ProductCollector:
+@mock.patch("src.product.product_collector.Webhook", return_value=None, autospec=True)
+def __test_product_collector(webhook_mock) -> ProductCollector:
     os.environ["Discord_Latest_Cards"] = "Webhook latest cards"
     os.environ["Discord_Bot_Status"] = "Webhook bot status"
 

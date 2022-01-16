@@ -7,7 +7,8 @@ import requests_mock
 from src.poller import PagePoller
 
 
-def test__given_config__when_constructor__then_right_initial_values_are_set():
+@mock.patch("src.product.product_collector.Webhook", return_value=None, autospec=True)
+def test__given_config__when_constructor__then_right_initial_values_are_set(webhook_mock):
     config = __load_test_config()
 
     page_poller = __test_page_poller(config)
@@ -15,6 +16,7 @@ def test__given_config__when_constructor__then_right_initial_values_are_set():
     assert page_poller.show_non_mapping is True
     assert page_poller.config == config
     assert page_poller.product_collector is not None
+    assert len(webhook_mock.method_calls) == 2
 
 
 def __test_page_poller(config):

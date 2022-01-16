@@ -18,8 +18,8 @@ class ProductCollector:
         self.usable_cards = config["usable_cards"]
         self.blacklist_words = config["blacklist_words"]
         self.blacklist = config["blacklist"]
-        self.webhook_latest_cards = os.environ["Discord_Latest_Cards"]
-        self.webhook_bot_status = os.environ["Discord_Bot_Status"]
+        self.webhook_latest_cards = Webhook.from_url(os.environ["Discord_Latest_Cards"], adapter=RequestsWebhookAdapter())
+        self.webhook_bot_status = Webhook.from_url(os.environ["Discord_Bot_Status"], adapter=RequestsWebhookAdapter())
 
     def add_new_product(self, product: Product):
         if not product.is_blacklisted(self.blacklist_words, self.blacklist):
@@ -70,9 +70,9 @@ class ProductCollector:
     def send_result_to_discord(self):
         message = self.__build_discord_message()
 
-        self.__send_message_to_discord(self.webhook_bot_status, "Running")
+        self.webhook_bot_status.send("Running")
         if message:
-            self.__send_message_to_discord(self.webhook_latest_cards, message)
+            self.webhook_latest_cards.send(message)
 
     def __build_discord_message(self):
         message = ""
@@ -88,11 +88,6 @@ class ProductCollector:
 
     def __list_of_relevant_products_order_by_roi_asc(self) -> List[Product]:
         return self.__list_of_products_by_filter_ordered_by_roi_asc(lambda x: x.relevant_for_discord())
-
-    @staticmethod
-    def __send_message_to_discord(webhook, message):
-        webhook = Webhook.from_url(webhook, adapter=RequestsWebhookAdapter())
-        webhook.send(message)
 
     @staticmethod
     def __add_line_break_if_message_not_empty(message):
