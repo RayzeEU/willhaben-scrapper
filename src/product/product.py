@@ -4,17 +4,17 @@ from src.translator.currency_translator import CurrencyTranslator
 from src.background_colors import BackgroundColors
 from src.translator.timestamp_translator import TimestampTranslator
 
-BASE_URL = 'https://www.willhaben.at'
-
 
 class Product:
+
+    BASE_URL = 'https://www.willhaben.at'
 
     def __init__(self, name: str, price_text: str, link: str, timestamp_text: str):
         self._name = name
         self._short_name = ""
         self._price = CurrencyTranslator.text_to_int(price_text)
         self._roi = 0.00
-        self._link = BASE_URL + link
+        self._link = self.BASE_URL + link
         self._timestamp = TimestampTranslator.text_to_timestamp_or_max_if_not_today(timestamp_text)
         self._mapped = False
         self._time_relevant = False
