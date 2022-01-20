@@ -2,13 +2,9 @@ import logging
 import os
 
 from typing import List
-
 from discord import Webhook, RequestsWebhookAdapter
-
 from src.background_colors import BackgroundColors
 from src.product.product import Product
-
-NOT_MAPPED = "Not mapped"
 
 
 class ProductCollector:

@@ -12,6 +12,9 @@ from src.product.product import Product
 
 class PagePoller:
 
+    FIVE_MINUTE_DELTA = timedelta(minutes=5)
+    ONE_HOUR_DELTA = timedelta(hours=1)
+
     def __init__(self, show_non_mapping, config):
         self._show_non_mapping = show_non_mapping
         self._config = config
@@ -63,9 +66,6 @@ class PagePoller:
                     Product(card_name, card_price, card_href, card_timestamp))
 
     def __check_new_cards(self):
-        check_timestamp = datetime.now()
-        minus_five_minutes = timedelta(minutes=5)
-        plus_one_hour = timedelta(hours=1)
-        timestamp_to_check = check_timestamp - minus_five_minutes + plus_one_hour
+        timestamp_to_check = datetime.now() - self.FIVE_MINUTE_DELTA + self.ONE_HOUR_DELTA
 
         self._product_collector.mapped_products_after_timestamp(timestamp_to_check)
