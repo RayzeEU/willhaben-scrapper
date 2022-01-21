@@ -8,6 +8,8 @@ from discord import Webhook, RequestsWebhookAdapter
 from src.background_colors import BackgroundColors
 from src.product.product import Product
 
+TEXT_RUNNING = "Running 1.0.0"
+
 
 class ProductCollector:
 
@@ -66,7 +68,7 @@ class ProductCollector:
     def send_result_to_discord(self):
         message = self.__build_discord_message()
 
-        self.webhook_bot_status.send("Running")
+        self.webhook_bot_status.send(TEXT_RUNNING)
         if message:
             self.webhook_latest_cards.send(message)
 

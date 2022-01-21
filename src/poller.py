@@ -65,17 +65,14 @@ class PagePoller:
     def __card_name(inner_div) -> Optional[str]:
         for header in inner_div.cssselect('div:nth-child(2) > span:nth-child(1) > h3:nth-child(1)'):
             return header.text
-        return None
 
     @staticmethod
     def __card_timestamp(inner_div) -> Optional[datetime]:
         for time in inner_div.cssselect('div:nth-child(2) > div:nth-child(3) > p:nth-child(1)'):
             return TimestampTranslator.text_to_timestamp_or_max_if_not_today(time.text)
-        return None
 
     @staticmethod
     def __card_price(inner_div) -> Optional[int]:
         for card_price_element in inner_div.cssselect(
                 'div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > span:nth-child(1)'):
             return CurrencyTranslator.text_to_int(card_price_element.text)
-        return None
