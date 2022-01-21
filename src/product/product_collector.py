@@ -1,7 +1,9 @@
 import logging
 import os
+from datetime import datetime
 
 from typing import List
+
 from discord import Webhook, RequestsWebhookAdapter
 from src.background_colors import BackgroundColors
 from src.product.product import Product
@@ -12,23 +14,21 @@ class ProductCollector:
     def __init__(self, config):
         self.products = []
         self.usable_cards = config["usable_cards"]
-        self.blacklist_words = config["blacklist_words"]
-        self.blacklist = config["blacklist"]
         self.webhook_latest_cards = Webhook.from_url(os.environ["Discord_Latest_Cards"], adapter=RequestsWebhookAdapter())
         self.webhook_bot_status = Webhook.from_url(os.environ["Discord_Bot_Status"], adapter=RequestsWebhookAdapter())
 
-    def add_new_product(self, product: Product):
-        if not product.is_blacklisted(self.blacklist_words, self.blacklist):
-            for usable_card in self.usable_cards:
-                if usable_card["name"].lower() in product.name_lowercase():
-                    product.set_product_properties(usable_card["name"], float(usable_card["monthly_income"]))
-                    product.mark_as_mapped()
-                    break
-        self.products.append(product)
+    def add_new_product(self, card_name: str, card_price: int, card_href: str, card_timestamp: datetime, timestamp_start: datetime):
+        found_usable_card = next(filter(lambda usable_card: usable_card["name"].lower() in card_name.lower(), self.usable_cards), None)
 
-    def mapped_products_after_timestamp(self, timestamp):
-        for product in self.products:
-            product.mark_as_time_relevant(timestamp)
+        short_name = ""
+        profit_per_month = 0
+
+        if found_usable_card:
+            short_name = found_usable_card["name"]
+            profit_per_month = float(found_usable_card["monthly_income"])
+
+        product = Product(card_name, short_name, card_price, profit_per_month, card_href, found_usable_card is not None, card_timestamp >= timestamp_start)
+        self.products.append(product)
 
     def products_size(self):
         return len(self.products)

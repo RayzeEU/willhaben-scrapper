@@ -50,8 +50,6 @@ def test__given_test_html_page__when_check_website__then_product_collector_in_pa
 
     # add products
     call_count = 25
-    # mapped_products_after_timestamp
-    call_count = call_count + 1
     # print_result_to_console
     call_count = call_count + 1
     # send_result_to_discord

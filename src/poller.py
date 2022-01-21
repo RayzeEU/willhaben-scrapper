@@ -1,4 +1,5 @@
 import logging
+from typing import Optional
 
 import lxml.html
 import requests
@@ -7,7 +8,8 @@ from datetime import datetime
 from datetime import timedelta
 
 from src.product.product_collector import ProductCollector
-from src.product.product import Product
+from src.translator.currency_translator import CurrencyTranslator
+from src.translator.timestamp_translator import TimestampTranslator
 
 
 class PagePoller:
@@ -26,8 +28,6 @@ class PagePoller:
     def check_website(self):
         self.__scan_for_products_and_add_to()
 
-        self.__check_new_cards()
-
         self._product_collector.print_result_to_console(self._show_non_mapping)
         self._product_collector.send_result_to_discord()
 
@@ -45,27 +45,37 @@ class PagePoller:
     def __parse_main_div_for_one_card(self, div):
         div_id = div.get('id')
         if div_id:
+            timestamp_start = datetime.now()
             for inner_div in div.cssselect('a:nth-child(1)'):
-                card_name = ''
-                card_price = ''
-                card_timestamp = ''
+                card_href = self.__card_href(inner_div)
+                card_name = self.__card_name(inner_div)
+                card_timestamp = self.__card_timestamp(inner_div)
+                card_price = self.__card_price(inner_div)
 
-                card_href = inner_div.get('href')
+                if not card_name or not card_timestamp or not card_price:
+                    break
 
-                for header in inner_div.cssselect('div:nth-child(2) > span:nth-child(1) > h3:nth-child(1)'):
-                    card_name = header.text
+                self._product_collector.add_new_product(card_name, card_price, card_href, card_timestamp, timestamp_start)
 
-                for time in inner_div.cssselect('div:nth-child(2) > div:nth-child(3) > p:nth-child(1)'):
-                    card_timestamp = time.text
+    @staticmethod
+    def __card_href(inner_div):
+        return 'https://www.willhaben.at' + inner_div.get('href')
 
-                for card_price_element in inner_div.cssselect(
-                        'div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > span:nth-child(1)'):
-                    card_price = card_price_element.text
+    @staticmethod
+    def __card_name(inner_div) -> Optional[str]:
+        for header in inner_div.cssselect('div:nth-child(2) > span:nth-child(1) > h3:nth-child(1)'):
+            return header.text
+        return None
 
-                self._product_collector.add_new_product(
-                    Product(card_name, card_price, card_href, card_timestamp))
+    @staticmethod
+    def __card_timestamp(inner_div) -> Optional[datetime]:
+        for time in inner_div.cssselect('div:nth-child(2) > div:nth-child(3) > p:nth-child(1)'):
+            return TimestampTranslator.text_to_timestamp_or_max_if_not_today(time.text)
+        return None
 
-    def __check_new_cards(self):
-        timestamp_to_check = datetime.now() - self.FIVE_MINUTE_DELTA + self.ONE_HOUR_DELTA
-
-        self._product_collector.mapped_products_after_timestamp(timestamp_to_check)
+    @staticmethod
+    def __card_price(inner_div) -> Optional[int]:
+        for card_price_element in inner_div.cssselect(
+                'div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > span:nth-child(1)'):
+            return CurrencyTranslator.text_to_int(card_price_element.text)
+        return None
