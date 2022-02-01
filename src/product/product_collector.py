@@ -8,7 +8,7 @@ from discord import Webhook, RequestsWebhookAdapter
 from src.background_colors import BackgroundColors
 from src.product.product import Product
 
-TEXT_RUNNING = "Running 1.0.0"
+TEXT_RUNNING = "Running 1.0.1"
 
 
 class ProductCollector:
