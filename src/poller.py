@@ -45,7 +45,7 @@ class PagePoller:
     def __parse_main_div_for_one_card(self, div):
         div_id = div.get('id')
         if div_id:
-            timestamp_start = datetime.now()
+            timestamp_start = datetime.now() - self.FIVE_MINUTE_DELTA + self.ONE_HOUR_DELTA
             for inner_div in div.cssselect('a:nth-child(1)'):
                 card_href = self.__card_href(inner_div)
                 card_name = self.__card_name(inner_div)
