@@ -8,7 +8,7 @@ from discord import Webhook, RequestsWebhookAdapter
 from src.background_colors import BackgroundColors
 from src.product.product import Product
 
-TEXT_RUNNING = "Running 1.0.1"
+TEXT_RUNNING = "Running 1.0.2"
 
 
 class ProductCollector:
@@ -20,7 +20,7 @@ class ProductCollector:
         self.webhook_bot_status = Webhook.from_url(os.environ["Discord_Bot_Status"], adapter=RequestsWebhookAdapter())
 
     def add_new_product(self, card_name: str, card_price: int, card_href: str, card_timestamp: datetime, timestamp_start: datetime):
-        found_usable_card = next(filter(lambda usable_card: usable_card["name"].lower() in card_name.lower(), self.usable_cards), None)
+        found_usable_card = next(filter(lambda usable_card: usable_card["name"].lower() in card_name.replace(" ", "").lower(), self.usable_cards), None)
 
         short_name = ""
         profit_per_month = 0
